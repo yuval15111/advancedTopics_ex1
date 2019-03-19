@@ -115,6 +115,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Ex1\Ex1\FileHandler.h" />
+    <ClInclude Include="..\..\..\Ex1\Ex1\main.h" />
+    <ClInclude Include="..\..\..\Ex1\Ex1\Player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Ex1\Ex1\FileHandler.cpp" />
+    <ClCompile Include="..\..\..\Ex1\Ex1\main.cpp" />
+    <ClCompile Include="..\..\..\Ex1\Ex1\Player.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
