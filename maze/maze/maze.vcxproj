@@ -115,14 +115,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Ex1\Ex1\FileHandler.h" />
-    <ClInclude Include="..\..\..\Ex1\Ex1\main.h" />
-    <ClInclude Include="..\..\..\Ex1\Ex1\Player.h" />
+    <ClCompile Include="FileHandler.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Ex1\Ex1\FileHandler.cpp" />
-    <ClCompile Include="..\..\..\Ex1\Ex1\main.cpp" />
-    <ClCompile Include="..\..\..\Ex1\Ex1\Player.cpp" />
+    <ClInclude Include="FileHandler.h" />
+    <ClInclude Include="Maze.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
