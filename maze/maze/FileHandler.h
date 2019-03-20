@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -18,12 +19,10 @@ public:
 
 	string getName(ifstream & fin, string line);
 
-	int getMaxSteps(ifstream & fin, string line);
+	int getIntValue(ifstream & fin, string line, const char * input);
 
-	int getRowsNum(ifstream & fin, string line);
+	vector<string> split(string str, char delimiter);
 
-	int getColsNum(ifstream & fin, string line);
-
-	MazeBoard getBoard(ifstream & fin, string line);
+	MazeBoard getBoard(ifstream & fin, string line, int rows, int cols);
 
 };
