@@ -11,22 +11,23 @@ Maze FileHandler::parseInput() {
 	string name;
 	int maxSteps;
 	int rowsNum, colsNum;
-	string line;
-	name = getName(m_fin, line);
-	maxSteps = getIntValue(m_fin, line, "MaxSteps");
-	rowsNum = getIntValue(m_fin, line, "Cols");
-	colsNum = getIntValue(m_fin, line, "Rows");
-	board = getBoard(m_fin, line, rowsNum, colsNum);
+	name = getName(m_fin);
+	maxSteps = getIntValue(m_fin, "MaxSteps");
+	rowsNum = getIntValue(m_fin, "Cols");
+	colsNum = getIntValue(m_fin, "Rows");
+	board = getBoard(m_fin, rowsNum, colsNum);
 	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board);
 }
 
-string FileHandler::getName(ifstream& fin, string line) {
+string FileHandler::getName(ifstream& fin) {
+	string line;
 	if (getline(fin, line)) {
 		return line;
 	}
 	return nullptr;
 }
-int FileHandler::getIntValue(ifstream& fin, string line, const char * input) {
+int FileHandler::getIntValue(ifstream& fin, const char * input) {
+	string line;
 	if (getline(fin, line)) {
 		vector<string> splitted = split(line, ' ');
 		if (splitted.size() != 3 || !splitted[0].equals(input) || !splitted[1].equals("="))
@@ -42,18 +43,32 @@ int FileHandler::getIntValue(ifstream& fin, string line, const char * input) {
 
 vector<string> FileHandler::split(string str, char delimiter) {
 	vector<string> v = {};
-	while (str.find(delimiter) != std::string::npos) {
-
+	int currSpaceIndex = 0, lastSpaceIndex = - 1;
+	while ((currSpaceIndex = str.find(delimiter)) != std::string::npos) {
+		if (currSpaceIndex != 0) {
+			v.push_back(str.substr(lastSpaceIndex + 1, currSpaceIndex));
+			lastSpaceIndex = currSpaceIndex;
+		}
 	}
+	return v;
 }
 
-MazeBoard FileHandler::getBoard(ifstream& fin, string line, int rows, int cols) {
+MazeBoard FileHandler::getBoard(ifstream& fin, int rows, int cols) {
 	MazeBoard board;
 	MazeRow row;
-
+	string line;
+	
 	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; j++) {
-			getline(fin, line)
+		if (getline(fin, line)) {
+
+			for (int j = 0; j < cols; j++) {
+				row[j] = line[j];
+
+			}
+			board[i] = row;
+		}
+		else {
+
 		}
 	}
 }
