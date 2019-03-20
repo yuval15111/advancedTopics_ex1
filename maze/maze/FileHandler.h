@@ -17,12 +17,12 @@ public:
 	~FileHandler();
 	Maze parseInput();
 
-	string getName(ifstream & fin, string line);
+	string getName(ifstream & fin);
 
-	int getIntValue(ifstream & fin, string line, const char * input);
+	int getIntValue(ifstream & fin, const char * input);
 
 	vector<string> split(string str, char delimiter);
 
-	MazeBoard getBoard(ifstream & fin, string line, int rows, int cols);
+	MazeBoard getBoard(ifstream & fin, int rows, int cols);
 
 };

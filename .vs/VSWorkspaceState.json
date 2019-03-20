@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
     "",
+    "\\maze",
     "\\maze\\maze"
   ],
+  "SelectedNode": "\\maze\\maze.sln",
   "PreviewInSolutionExplorer": false
 }

@@ -30,10 +30,10 @@ int FileHandler::getIntValue(ifstream& fin, const char * input) {
 	string line;
 	if (getline(fin, line)) {
 		vector<string> splitted = split(line, ' ');
-		if (splitted.size() != 3 || !splitted[0].equals(input) || !splitted[1].equals("="))
+		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0)
 			// handle errors
 			return -1;
-		int result = atoi(splitted[2]);
+		int result = atoi(splitted[2].copy); // MAYBE THERE IS A BETTER SOLUTION
 		if (result == 0) return -1;
 		// handle error of illegal number input
 		return result;
@@ -65,10 +65,12 @@ MazeBoard FileHandler::getBoard(ifstream& fin, int rows, int cols) {
 				row[j] = line[j];
 
 			}
-			board[i] = row;
+			
 		}
 		else {
-
+			// finish
 		}
+		board[i] = row;
 	}
+	return board;
 }
