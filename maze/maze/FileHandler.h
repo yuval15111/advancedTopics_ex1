@@ -1,10 +1,4 @@
-#include <cstdlib>
-#include <stdlib.h>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <fstream>
-#include "Maze.h"
+#include "MainAux.h"
 
 using namespace std;
 
@@ -15,14 +9,14 @@ private:
 public:
 	FileHandler(ifstream& fin, ofstream& fout) : m_fin(fin), m_fout(fout) {};
 	~FileHandler();
-	Maze parseInput();
+	Maze * parseInput();
 
 	string getName(ifstream & fin);
 
-	int getIntValue(ifstream & fin, const char * input);
+	size_t getIntValue(ifstream & fin, const char * input);
 
 	vector<string> split(string str, char delimiter);
 
-	MazeBoard getBoard(ifstream & fin, int rows, int cols);
+	MazeBoard getBoard(ifstream & fin, size_t rows, size_t cols, size_t playerLocation[2]);
 
 };

@@ -6,17 +6,20 @@ FileHandler::~FileHandler()
 	delete(&m_fout);
 }
 
-Maze FileHandler::parseInput() {
+Maze * FileHandler::parseInput() {
 	MazeBoard board;
 	string name;
-	int maxSteps;
-	int rowsNum, colsNum;
+	size_t maxSteps;
+	size_t rowsNum, colsNum;
+	size_t playerLocation[2] = { 0, 0 };
+
 	name = getName(m_fin);
 	maxSteps = getIntValue(m_fin, "MaxSteps");
-	rowsNum = getIntValue(m_fin, "Cols");
-	colsNum = getIntValue(m_fin, "Rows");
-	board = getBoard(m_fin, rowsNum, colsNum);
-	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board);
+	rowsNum = getIntValue(m_fin, "Rows");
+	colsNum = getIntValue(m_fin, "Cols");
+	board = getBoard(m_fin, rowsNum, colsNum, playerLocation);
+	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation);
+	return maze;
 }
 
 string FileHandler::getName(ifstream& fin) {
@@ -26,14 +29,14 @@ string FileHandler::getName(ifstream& fin) {
 	}
 	return nullptr;
 }
-int FileHandler::getIntValue(ifstream& fin, const char * input) {
+size_t FileHandler::getIntValue(ifstream& fin, const char * input) {
 	string line;
 	if (getline(fin, line)) {
 		vector<string> splitted = split(line, ' ');
 		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0)
 			// handle errors
 			return -1;
-		int result = atoi(splitted[2].copy); // MAYBE THERE IS A BETTER SOLUTION
+		size_t result = (size_t)atoi(splitted[2].c_str()); // MAYBE THERE IS A BETTER SOLUTION
 		if (result == 0) return -1;
 		// handle error of illegal number input
 		return result;
@@ -43,34 +46,42 @@ int FileHandler::getIntValue(ifstream& fin, const char * input) {
 
 vector<string> FileHandler::split(string str, char delimiter) {
 	vector<string> v = {};
-	int currSpaceIndex = 0, lastSpaceIndex = - 1;
-	while ((currSpaceIndex = str.find(delimiter)) != std::string::npos) {
+	size_t currSpaceIndex = 0, lastSpaceIndex = - 1;
+	while ((currSpaceIndex = str.find(delimiter, lastSpaceIndex + 1)) != std::string::npos) {
 		if (currSpaceIndex != 0) {
-			v.push_back(str.substr(lastSpaceIndex + 1, currSpaceIndex));
+			v.push_back(str.substr(lastSpaceIndex + 1, currSpaceIndex - lastSpaceIndex - 1));
 			lastSpaceIndex = currSpaceIndex;
 		}
 	}
+	v.push_back(str.substr(lastSpaceIndex + 1));
 	return v;
 }
 
-MazeBoard FileHandler::getBoard(ifstream& fin, int rows, int cols) {
+MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t playerLocation[2]) {
 	MazeBoard board;
-	MazeRow row;
+	
 	string line;
 	
-	for (int i = 0; i < rows; i++) {
+	for (size_t i = 0; i < rows; i++) {
+		MazeRow row;
 		if (getline(fin, line)) {
-
-			for (int j = 0; j < cols; j++) {
-				row[j] = line[j];
-
+			for (int j = 0; j < line.length(); j++) {
+				row.push_back(line[j]);
+				if (line[j] == '@') {
+					playerLocation[0] = i;
+					playerLocation[1] = j;
+				}
 			}
-			
+			for (int j = line.length(); j < cols; j++) {
+				row.push_back(' ');
+			}
 		}
 		else {
-			// finish
+			for (size_t j = 0; j < cols; j++) {
+				row.push_back(' ');
+			}
 		}
-		board[i] = row;
+		board.push_back(row);
 	}
 	return board;
 }
