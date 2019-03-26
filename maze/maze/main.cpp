@@ -15,6 +15,7 @@ int main(int argc, char* argv[]) {
 	ofstream outputFileStream(argv[2]);
 	FileHandler fileH(inputFileStream, outputFileStream);
 	Maze * maze = fileH.parseInput();
+	if (maze)
 	maze->printBoard();
 	int x = 3;
 }

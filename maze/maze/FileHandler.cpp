@@ -12,13 +12,20 @@ Maze * FileHandler::parseInput() {
 	size_t maxSteps;
 	size_t rowsNum, colsNum;
 	size_t playerLocation[2] = { 0, 0 };
+	ParsingErrorType error = ParsingErrorType::NoError;
 
 	name = getName(m_fin);
-	maxSteps = getIntValue(m_fin, "MaxSteps");
-	rowsNum = getIntValue(m_fin, "Rows");
-	colsNum = getIntValue(m_fin, "Cols");
-	board = getBoard(m_fin, rowsNum, colsNum, playerLocation);
-	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation);
+	if ((maxSteps = getIntValue(m_fin, "MaxSteps")) == -1) {
+		error = error | ParsingErrorType::MaxStepsError;
+	}
+	if ((rowsNum = getIntValue(m_fin, "Rows")) == -1) {
+		error = error | ParsingErrorType::RowsError;
+	}
+	if ((colsNum = getIntValue(m_fin, "Cols")) == -1) {
+		error = error | ParsingErrorType::ColsError;
+	}
+	board = getBoard(m_fin, rowsNum, colsNum, playerLocation, &error);
+	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation, error);
 	return maze;
 }
 
@@ -34,11 +41,9 @@ size_t FileHandler::getIntValue(ifstream& fin, const char * input) {
 	if (getline(fin, line)) {
 		vector<string> splitted = split(line, ' ');
 		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0)
-			// handle errors
 			return -1;
 		size_t result = (size_t)atoi(splitted[2].c_str()); // MAYBE THERE IS A BETTER SOLUTION
 		if (result == 0) return -1;
-		// handle error of illegal number input
 		return result;
 	}
 	return -1;
@@ -57,10 +62,11 @@ vector<string> FileHandler::split(string str, char delimiter) {
 	return v;
 }
 
-MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t playerLocation[2]) {
+MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t playerLocation[2], ParsingErrorType * error) {
 	MazeBoard board;
 	
 	string line;
+	bool seenPlayerChar = false, seenEndChar = false;
 	
 	for (size_t i = 0; i < rows; i++) {
 		MazeRow row;
@@ -68,8 +74,22 @@ MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t 
 			for (int j = 0; j < line.length(); j++) {
 				row.push_back(line[j]);
 				if (line[j] == '@') {
-					playerLocation[0] = i;
-					playerLocation[1] = j;
+					if (!seenEndChar) {
+						playerLocation[0] = i;
+						playerLocation[1] = j;
+						seenEndChar = true;
+					}
+					else { // only one player char allowed
+						*error = *error | ParsingErrorType::MoreThanOnePlayerChar;
+					}
+				}
+				if (line[j] == '$') {
+					if (!seenPlayerChar) {
+						seenPlayerChar = true;
+					}
+					else { // only one end char allowed
+						*error = *error | ParsingErrorType::MoreThanOneEndChar;
+					}
 				}
 			}
 			for (int j = line.length(); j < cols; j++) {
@@ -82,6 +102,12 @@ MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t 
 			}
 		}
 		board.push_back(row);
+	}
+	if (!seenPlayerChar) {
+		*error = *error | ParsingErrorType::MissingPlayerChar;
+	}
+	if (!seenEndChar) {
+		*error = *error | ParsingErrorType::MissingEndChar;
 	}
 	return board;
 }
