@@ -1,4 +1,4 @@
-#include "MainAux.h"
+//#include "MainAux.h"
 #include "FileHandler.h"
 
 int main(int argc, char* argv[]) {
@@ -14,8 +14,9 @@ int main(int argc, char* argv[]) {
 	}
 	ofstream outputFileStream(argv[2]);
 	FileHandler fileH(inputFileStream, outputFileStream);
-	Maze * maze = fileH.parseInput();
-	if (maze)
-	maze->printBoard();
+	//ParsingErrorType p_errors = ParsingErrorType::NoError;
+	//Maze * maze = fileH.parseInput(p_errors);
+	//if (maze)
+	//maze->printBoard();
 	int x = 3;
 }
