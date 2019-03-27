@@ -1,11 +1,10 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-//#include <string>
-//#include <vector>
-//#include <iostream>
+#include <string>
+#include <vector>
+#include <iostream>
 //#include "MainAux.h"
-#include "FileHandler.h"
 
 using namespace std;
 using MazeRow = std::vector<char>;

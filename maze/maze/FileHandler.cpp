@@ -6,43 +6,65 @@ FileHandler::~FileHandler()
 	delete(&m_fout);
 }
 
-Maze * FileHandler::parseInput(ParsingErrorType & errors) {
+FileHandler::FileHandler(int argc, char * argv[]) : m_fin(argv[1]), m_fout(argv[2]) {
+	m_errors = ErrorType::NoErrors;
+	if (argc >= 3) {
+		if (!m_fin.good()) {
+			m_errors = m_errors | ErrorType::BadInputAddress;
+		}
+		if (!m_fout.good()) {
+			m_errors = m_errors | ErrorType::BadOutputAddress;
+		}
+		checkIOErrors(argv[1], argv[2]);
+	}
+	else {
+		if (argc == 1) {
+			m_errors = m_errors | ErrorType::MissingInput;
+		}
+		else { // argc == 2
+			m_errors = m_errors | ErrorType::MissingOutput;
+		}
+		checkIOErrors(nullptr, nullptr);
+	}
+}
+
+Maze * FileHandler::parseInput() {
 	MazeBoard board;
 	string name;
 	size_t maxSteps;
 	size_t rowsNum, colsNum;
 	size_t playerLocation[2] = { 0, 0 };
 
-	name = getName(m_fin);
-	if ((maxSteps = getIntValue(m_fin, "MaxSteps")) == -1) {
-		errors = errors | ParsingErrorType::MaxStepsError;
-	}
-	if ((rowsNum = getIntValue(m_fin, "Rows")) == -1) {
-		errors = errors | ParsingErrorType::RowsError;
-	}
-	if ((colsNum = getIntValue(m_fin, "Cols")) == -1) {
-		errors = errors | ParsingErrorType::ColsError;
-	}
-	board = getBoard(m_fin, rowsNum, colsNum, playerLocation, errors);
+	name = getName();
+
+	maxSteps = getIntValue("MaxSteps", ErrorType::MaxStepsError);
+	rowsNum = getIntValue("Rows", ErrorType::RowsError);
+	colsNum = getIntValue("Cols", ErrorType::ColsError);
+
+	board = getBoard(rowsNum, colsNum, playerLocation);
 	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation);
 	return maze;
 }
 
-string FileHandler::getName(ifstream& fin) {
+string FileHandler::getName() {
 	string line;
-	if (getline(fin, line)) {
+	if (getline(m_fin, line)) {
 		return line;
 	}
 	return nullptr;
 }
-size_t FileHandler::getIntValue(ifstream& fin, const char * input) {
+size_t FileHandler::getIntValue(const char * input, const ErrorType error) {
 	string line;
-	if (getline(fin, line)) {
+	if (getline(m_fin, line)) {
 		vector<string> splitted = split(line, ' ');
-		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0)
+		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0) {
 			return -1;
+		}
 		size_t result = (size_t)atoi(splitted[2].c_str()); // TODO: MAYBE THERE IS A BETTER SOLUTION
-		if (result == 0) return -1;
+		if (result == 0) {
+			m_errors = m_errors | error;
+			return -1;
+		}
 		return result;
 	}
 	return -1;
@@ -61,7 +83,7 @@ vector<string> FileHandler::split(string str, char delimiter) {
 	return v;
 }
 
-MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t playerLocation[2], ParsingErrorType & errors) {
+MazeBoard FileHandler::getBoard(size_t rows, size_t cols, size_t playerLocation[2]) {
 	MazeBoard board;
 	
 	string line;
@@ -69,7 +91,7 @@ MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t 
 	
 	for (size_t i = 0; i < rows; i++) {
 		MazeRow row;
-		if (getline(fin, line)) {
+		if (getline(m_fin, line)) {
 			for (int j = 0; j < line.length(); j++) {
 				row.push_back(line[j]);
 				if (line[j] == '@') {
@@ -79,7 +101,7 @@ MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t 
 						seenEndChar = true;
 					}
 					else { // only one player char allowed
-						errors = errors | ParsingErrorType::MoreThanOnePlayerChar;
+						m_errors = m_errors | ErrorType::MoreThanOnePlayerChar;
 					}
 				}
 				if (line[j] == '$') {
@@ -87,7 +109,7 @@ MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t 
 						seenPlayerChar = true;
 					}
 					else { // only one end char allowed
-						errors = errors | ParsingErrorType::MoreThanOneEndChar;
+						m_errors = m_errors | ErrorType::MoreThanOneEndChar;
 					}
 				}
 			}
@@ -103,10 +125,30 @@ MazeBoard FileHandler::getBoard(ifstream& fin, size_t rows, size_t cols, size_t 
 		board.push_back(row);
 	}
 	if (!seenPlayerChar) {
-		errors = errors | ParsingErrorType::MissingPlayerChar;
+		m_errors = m_errors | ErrorType::MissingPlayerChar;
 	}
 	if (!seenEndChar) {
-		errors = errors | ParsingErrorType::MissingEndChar;
+		m_errors = m_errors | ErrorType::MissingEndChar;
 	}
 	return board;
+}
+
+void FileHandler::checkIOErrors(const string & input, const string & output) {
+	if (m_errors & ErrorType::MissingInput) {
+		cout << "Missing maze file argument in command line" << endl;
+		
+	}
+	if (m_errors & ErrorType::MissingOutput) {
+		cout << "Missing output file argument in command line" << endl;
+	}
+	if (m_errors & ErrorType::BadInputAddress) {
+		cout << "Command line argument for maze: " << input << " doesn't lead to a maze file or leads to a file that cannot be opened" << endl;
+	}
+	if (m_errors & ErrorType::BadOutputAddress) {
+		cout << "Command line argument for output file: " << output << " points to a bad path or to a file that already exists" << endl;
+	}
+}
+
+void FileHandler::checkParsingErrors() {
+	return;
 }
