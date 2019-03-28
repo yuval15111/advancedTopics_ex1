@@ -70,6 +70,6 @@ struct Errors {
 	ErrorList list;
 };
 
-void checkErrors(Errors & e);
+bool checkErrors(Errors & e);
 
 #endif

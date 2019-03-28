@@ -2,7 +2,6 @@
 #include "FileHandler.h"
 
 int main(int argc, char* argv[]) {
-	cout << "check" << endl;
 	FileHandler fileH(argc, argv);
 	Maze * maze = fileH.parseInput();
 	maze->printBoard();

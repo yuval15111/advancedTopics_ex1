@@ -24,26 +24,30 @@ FileHandler::FileHandler(int argc, char * argv[]) : m_fin(argv[1]), m_fout(argv[
 			pushError(ErrorType::BadOutputAddress, nullptr);
 		}
 	}
-	checkErrors(m_errors);
 }
 
 Maze * FileHandler::parseInput() {
+	if (!checkErrors(m_errors)) { // IO Errors - can't parse!
+		return nullptr;
+	}
 	MazeBoard board;
 	string name;
 	size_t maxSteps;
 	size_t rowsNum, colsNum;
-	size_t playerLocation[2] = { 0, 0 };
+	Coordinate playerLocation = { 0, 0 };
 
 	name = getName();
-
 	maxSteps = getIntValue(MAXSTEPS, ErrorType::MaxStepsError);
 	rowsNum = getIntValue(ROWS, ErrorType::RowsError);
 	colsNum = getIntValue(COLS, ErrorType::ColsError);
-
-	board = getBoard(rowsNum, colsNum, playerLocation);
-	Maze* maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation);
-	checkErrors(m_errors);
-	return maze;
+	if (checkErrors(m_errors)) { // lines 2-4 are valid
+		board = getBoard(rowsNum, colsNum, playerLocation);
+		if (checkErrors(m_errors)) { // maze file is valid
+			Maze * maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation);
+			return maze;
+		}
+	}
+	return nullptr; // maze file is not valid
 }
 
 string FileHandler::getName() {
@@ -58,11 +62,12 @@ size_t FileHandler::getIntValue(const char * input, const ErrorType error) {
 	if (getline(m_fin, line)) {
 		vector<string> splitted = split(line, SPACE_CHAR);
 		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0) {
+			pushError(error, line);
 			return -1;
 		}
 		size_t result = (size_t)atoi(splitted[2].c_str()); // TODO: MAYBE THERE IS A BETTER SOLUTION
 		if (result == 0) {
-			pushError(ErrorType::MissingOutput, line);
+			pushError(error, line);
 			return -1;
 		}
 		return result;
@@ -83,7 +88,7 @@ vector<string> FileHandler::split(string str, char delimiter) {
 	return v;
 }
 
-MazeBoard FileHandler::getBoard(size_t rows, size_t cols, size_t playerLocation[2]) {
+MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coordinate playerLocation) {
 	MazeBoard board;
 	
 	string line;
@@ -113,8 +118,11 @@ MazeBoard FileHandler::getBoard(size_t rows, size_t cols, size_t playerLocation[
 					}
 				}
 				else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) { // other chars are invalid
-					string str;
-					pushError(ErrorType::WrongChar, to_string(line[j]) + to_string(i) + to_string(j));
+					string str = "000";
+					str[0] = line[j];
+					str[1] += i;
+					str[2] += j;
+					pushError(ErrorType::WrongChar, str);
 				}
 				row.push_back(line[j]);
 			}

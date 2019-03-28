@@ -66,15 +66,21 @@ void handleMoreThanOneEndCharError(const string & str)
 
 void handleWrongCharError(const string & str)
 {
-	cout << "Wrong character in maze: " << str[0] << " in row " << str[1] << ", col " << str[2] << endl;
+	if (str[0] == 9)
+		cout << "Wrong character in maze: TAB in row " << str[1] << ", col " << str[2] << endl;
+	else
+		cout << "Wrong character in maze: " << str[0] << " in row " << str[1] << ", col " << str[2] << endl;
 }
 
-void checkErrors(Errors & e) {
+bool checkErrors(Errors & e) {
+	bool noErrors = e.list.size() == 0;
 	for (ErrorList::iterator it = e.list.begin(); it != e.list.end(); ++it) {
 		Func f = e.fmap[it->first];
 		string str = it->second;
 		f(str);
 	}
+	e.list.clear();
+	return noErrors;
 }
 
 
