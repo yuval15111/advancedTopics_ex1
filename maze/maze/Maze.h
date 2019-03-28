@@ -1,14 +1,7 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-#include <string>
-#include <vector>
-#include <iostream>
-//#include "MainAux.h"
-
-using namespace std;
-using MazeRow = std::vector<char>;
-using MazeBoard = std::vector<MazeRow>;
+#include "MainAux.h"
 
 class Maze {
 private:
@@ -16,10 +9,11 @@ private:
 	size_t m_maxSteps;
 	size_t m_rowsNum, m_colsNum;
 	MazeBoard m_board;
-	size_t m_playerLocation[2];
+	Coordinate m_playerLocation;
 
 public:
-	Maze(string name, size_t maxSteps, size_t rowsNum, size_t colsNum, MazeBoard board, size_t playerLocation[2]);
+	Maze(string name, size_t maxSteps, size_t rowsNum, size_t colsNum, MazeBoard board, Coordinate playerLocation);
+	//~Maze();
 	void printBoard();
 };
 

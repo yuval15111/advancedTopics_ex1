@@ -1,6 +1,10 @@
-#include "MainAux.h"
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include "Maze.h"
 
 class Player {
+	/*
 private:
 	size_t numOfSteps = 0;
 	size_t bookmark[2];
@@ -15,5 +19,7 @@ private:
 	void hitWall();
 	void bookmark();
 	void hitBookmark();
-	
+	*/
 };
+
+#endif
