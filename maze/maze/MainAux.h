@@ -21,7 +21,25 @@
 using namespace std;
 using MazeRow = vector<char>;
 using MazeBoard = vector<MazeRow>;
-using Coordinate = size_t[2];
+//using Coordinate = size_t[2];
+
+struct Coord {
+	size_t row;
+	size_t col;
+	void set(size_t i, size_t j);
+	
+};
+
+bool operator<(const Coord& a, const Coord& b);
+inline bool operator==(const Coord& a, const Coord& b) {return a.row == b.row && a.col == b.col};
+
+enum class Action {
+	UP, DOWN, RIGHT, LEFT, BOOKMARK
+};
+
+enum class State {
+	SPACE, BOOKMARK, WALL, END
+};
 
 enum class ErrorType {
 	MissingInput, MissingOutput, BadInputAddress, BadOutputAddress,
@@ -36,8 +54,8 @@ typedef void(*Func) (const string & str);
 typedef vector<Pair> ErrorList;
 typedef map<ErrorType, Func> FuncMap;
 
-void printWinMessage(const int numOfSteps);
-void printLostMessage(const int numOfSteps);
+void printWinMessage(const size_t numOfSteps);
+void printLostMessage(const size_t numOfSteps);
 
 void handleMissingInputError(const string & str);
 void handleMissingOutputError(const string & str);

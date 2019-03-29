@@ -4,22 +4,24 @@
 #include "Maze.h"
 
 class Player {
-	/*
+	
 private:
-	size_t numOfSteps = 0;
-	size_t bookmark[2];
-	Maze * maze;
+	size_t m_numOfSteps = 0;
+	Coord m_bookmark;
+	vector <Coord> m_path;
+	Coord m_currentLocation;
+	map <Coord, char> m_mazeMapping;
 
 public:
-	Player(Maze * maze) {};
-	void Play();
+	Player();
 
 private:
-	void move();
+	Action move();
 	void hitWall();
 	void bookmark();
 	void hitBookmark();
-	*/
+	void updatePath(); // we will call from move
+	void updateMapping(Coord loc, char c);
 };
 
 #endif

@@ -4,17 +4,20 @@
 #include "MainAux.h"
 
 class Maze {
-private:
+public:
 	string m_name;
 	size_t m_maxSteps;
+private:
 	size_t m_rowsNum, m_colsNum;
 	MazeBoard m_board;
-	Coordinate m_playerLocation;
+	Coord m_playerLocation;
+	Coord m_endLocation;
 
 public:
-	Maze(string name, size_t maxSteps, size_t rowsNum, size_t colsNum, MazeBoard board, Coordinate playerLocation);
+	Maze(string name, size_t maxSteps, size_t rowsNum, size_t colsNum, MazeBoard board, Coord playerLocation);
 	//~Maze();
 	void printBoard();
+	bool hasReachedDestination();
 };
 
 #endif

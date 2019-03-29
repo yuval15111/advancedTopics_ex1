@@ -1,5 +1,18 @@
 #include "MainAux.h"
 
+void Coord::set(size_t i, size_t j) {
+	row = i;
+	col = j;
+}
+
+bool operator<(const Coord& a, const Coord& b)
+{
+	if (a.row < b.row) return true;
+	else if (a.row == b.row) return a.col < b.col;
+	else return false;
+}
+
+
 void printWinMessage(const int numOfSteps) { 
 	cout << "Succeeded in " << numOfSteps << " steps" << endl; 
 }
@@ -82,5 +95,4 @@ bool checkErrors(Errors & e) {
 	e.list.clear();
 	return noErrors;
 }
-
 

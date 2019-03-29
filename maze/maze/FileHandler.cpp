@@ -34,7 +34,7 @@ Maze * FileHandler::parseInput() {
 	string name;
 	size_t maxSteps;
 	size_t rowsNum, colsNum;
-	Coordinate playerLocation = { 0, 0 };
+	Coord playerLocation = { 0, 0 };
 
 	name = getName();
 	maxSteps = getIntValue(MAXSTEPS, ErrorType::MaxStepsError);
@@ -88,7 +88,7 @@ vector<string> FileHandler::split(string str, char delimiter) {
 	return v;
 }
 
-MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coordinate playerLocation) {
+MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coord playerLocation) {
 	MazeBoard board;
 	
 	string line;
@@ -97,12 +97,13 @@ MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coordinate playerLocat
 	for (size_t i = 0; i < rows; i++) {
 		MazeRow row;
 		if (getline(m_fin, line)) {
-			for (int j = 0; j < line.length(); j++) {
+			for (size_t j = 0; j < line.length(); j++) {
 				
 				if (line[j] == PLAYER_CHAR) {
 					if (!seenPlayerChar) {
-						playerLocation[0] = i;
-						playerLocation[1] = j;
+						//playerLocation[0] = i;
+						//playerLocation[1] = j;
+						playerLocation.set(i, j);
 						seenPlayerChar = true;
 					}
 					else { // only one player char allowed

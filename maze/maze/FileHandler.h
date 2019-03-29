@@ -16,7 +16,7 @@ public:
 	string getName();
 	size_t getIntValue(const char * input, const ErrorType error);
 	vector<string> split(string str, char delimiter);
-	MazeBoard getBoard(size_t rows, size_t cols, Coordinate playerLocation);
+	MazeBoard getBoard(size_t rows, size_t cols, Coord playerLocation);
 	inline void pushError(ErrorType type, const string & str) {	m_errors.list.push_back(Pair(type, str)); }
 };
 
