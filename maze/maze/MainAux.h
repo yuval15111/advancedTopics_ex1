@@ -19,8 +19,8 @@
 #define WALL_CHAR '#'
 
 using namespace std;
-using MazeRow = std::vector<char>;
-using MazeBoard = std::vector<MazeRow>;
+using MazeRow = vector<char>;
+using MazeBoard = vector<MazeRow>;
 using Coordinate = size_t[2];
 
 enum class ErrorType {
@@ -31,13 +31,14 @@ enum class ErrorType {
 	WrongChar
 };
 
-typedef pair<ErrorType, std::string> Pair;
+typedef pair<ErrorType, string> Pair;
 typedef void(*Func) (const string & str);
-typedef std::vector<Pair> ErrorList;
-typedef std::map<ErrorType, Func> FuncMap;
+typedef vector<Pair> ErrorList;
+typedef map<ErrorType, Func> FuncMap;
 
 void printWinMessage(const int numOfSteps);
 void printLostMessage(const int numOfSteps);
+
 void handleMissingInputError(const string & str);
 void handleMissingOutputError(const string & str);
 void handleBadInputAddressError(const string & str);

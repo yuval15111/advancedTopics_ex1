@@ -120,7 +120,7 @@ MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coordinate playerLocat
 				else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) { // other chars are invalid
 					string str = "000";
 					str[0] = line[j];
-					str[1] += i;
+					str[1] += i; // TODO: FIX case of more than 1 digit 
 					str[2] += j;
 					pushError(ErrorType::WrongChar, str);
 				}
