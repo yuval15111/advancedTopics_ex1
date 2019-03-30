@@ -9,20 +9,12 @@
 	delete(&m_errors);
 }*/
 
-FileHandler::FileHandler(int argc, char * argv[]) : m_fin(argv[1]), m_fout(argv[2]) {
-	if (argc == 1) {
-		pushError(ErrorType::MissingInput, argv[1]);
+FileHandler::FileHandler(char * argv[]) : m_fin(argv[1]), m_fout(argv[2]) { // TODO: Check IO Erorrs
+	if (!m_fin.good()) {
+		pushError(ErrorType::BadInputAddress, argv[1]);
 	}
-	else if (argc == 2) {
-		pushError(ErrorType::MissingOutput, argv[2]);
-	}
-	else { // argc >= 3
-		if (!m_fin.good()) {
-			pushError(ErrorType::BadInputAddress, nullptr);
-		}
-		if (!m_fout.good()) {
-			pushError(ErrorType::BadOutputAddress, nullptr);
-		}
+	if (!m_fout.good()) {
+		pushError(ErrorType::BadOutputAddress, argv[2]);
 	}
 }
 
@@ -35,15 +27,16 @@ Maze * FileHandler::parseInput() {
 	size_t maxSteps;
 	size_t rowsNum, colsNum;
 	Coord playerLocation = { 0, 0 };
+	Coord endLocation = { 0, 0 };
 
 	name = getName();
 	maxSteps = getIntValue(MAXSTEPS, ErrorType::MaxStepsError);
 	rowsNum = getIntValue(ROWS, ErrorType::RowsError);
 	colsNum = getIntValue(COLS, ErrorType::ColsError);
 	if (checkErrors(m_errors)) { // lines 2-4 are valid
-		board = getBoard(rowsNum, colsNum, playerLocation);
+		board = getBoard(rowsNum, colsNum, playerLocation, endLocation);
 		if (checkErrors(m_errors)) { // maze file is valid
-			Maze * maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation);
+			Maze * maze = new Maze(name, maxSteps, rowsNum, colsNum, board, playerLocation, endLocation);
 			return maze;
 		}
 	}
@@ -88,7 +81,7 @@ vector<string> FileHandler::split(string str, char delimiter) {
 	return v;
 }
 
-MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coord playerLocation) {
+MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coord & playerLocation, Coord & endLocation) {
 	MazeBoard board;
 	
 	string line;
@@ -101,10 +94,9 @@ MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coord playerLocation) 
 				
 				if (line[j] == PLAYER_CHAR) {
 					if (!seenPlayerChar) {
-						//playerLocation[0] = i;
-						//playerLocation[1] = j;
 						playerLocation.set(i, j);
 						seenPlayerChar = true;
+						line[j] = SPACE_CHAR; // not necessary as '@' character
 					}
 					else { // only one player char allowed
 						pushError(ErrorType::MoreThanOnePlayerChar, nullptr);
@@ -112,6 +104,7 @@ MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coord playerLocation) 
 				}
 				else if (line[j] == END_CHAR) {
 					if (!seenEndChar) {
+						endLocation.set(i, j);
 						seenEndChar = true;
 					}
 					else { // only one end char allowed
@@ -121,8 +114,8 @@ MazeBoard FileHandler::getBoard(size_t rows, size_t cols, Coord playerLocation) 
 				else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) { // other chars are invalid
 					string str = "000";
 					str[0] = line[j];
-					str[1] += i; // TODO: FIX case of more than 1 digit 
-					str[2] += j;
+					str[1] = (char)i;
+					str[2] = (char)j;
 					pushError(ErrorType::WrongChar, str);
 				}
 				row.push_back(line[j]);

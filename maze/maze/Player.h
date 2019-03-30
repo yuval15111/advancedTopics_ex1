@@ -7,21 +7,28 @@ class Player {
 	
 private:
 	size_t m_numOfSteps = 0;
+	size_t m_rowsNum = INT_MAX;
+	size_t m_colsNum = INT_MAX;
 	Coord m_bookmark;
 	vector <Coord> m_path;
 	Coord m_currentLocation;
-	map <Coord, char> m_mazeMapping;
+	map <Coordinate, char> m_mazeMapping;
 
 public:
 	Player();
+	Action move();
+	void hitWall(Action a);
+	void hitBookmark();
 
 private:
-	Action move();
-	void hitWall();
 	void bookmark();
-	void hitBookmark();
-	void updatePath(); // we will call from move
+	void updatePath(bool undo = false); // we will call from move
 	void updateMapping(Coord loc, char c);
+	Action getLastRelativePoision();
+	Action shuffle(vector<Action> exclusions);
+	bool inVector(Action action, vector<Action> exclusions);
+	void findExclusions(vector<Action> & exclusions);
+	void updateLocation(Action a, bool undo = false);
 };
 
 #endif

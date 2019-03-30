@@ -12,6 +12,21 @@ bool operator<(const Coord& a, const Coord& b)
 	else return false;
 }
 
+Action operator!(const Action& a) {
+	switch (a) {
+	case Action::UP:
+		return Action::DOWN;
+	case Action::DOWN:
+		return Action::UP;
+	case Action::LEFT:
+		return Action::RIGHT;
+	case Action::RIGHT:
+		return Action::LEFT;
+	default:
+		return a;
+	}
+}
+
 
 void printWinMessage(const int numOfSteps) { 
 	cout << "Succeeded in " << numOfSteps << " steps" << endl; 
@@ -21,12 +36,12 @@ void printLostMessage(const int numOfSteps) {
 	cout << "Failed to solve maze in " << numOfSteps << " steps" << endl;
 }
 
-void handleMissingInputError(const string & str) {
+void handleMissingInputError() {
 	cout << "Missing maze file argument in command line" << endl;
 }
 
-void handleMissingOutputError(const string & str) {
-	cout << "Missing maze file argument in command line" << endl;
+void handleMissingOutputError() {
+	cout << "Missing output file argument in command line" << endl;
 }
 
 void handleBadInputAddressError(const string & str)
@@ -80,9 +95,9 @@ void handleMoreThanOneEndCharError(const string & str)
 void handleWrongCharError(const string & str)
 {
 	if (str[0] == 9)
-		cout << "Wrong character in maze: TAB in row " << str[1] << ", col " << str[2] << endl;
+		cout << "Wrong character in maze: TAB in row " << (int)str[1] << ", col " << (int)str[2] << endl;
 	else
-		cout << "Wrong character in maze: " << str[0] << " in row " << str[1] << ", col " << str[2] << endl;
+		cout << "Wrong character in maze: " << str[0] << " in row " << (int)str[1] << ", col " << (int)str[2] << endl;
 }
 
 bool checkErrors(Errors & e) {
