@@ -100,8 +100,8 @@ MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate
 				row.push_back(SPACE_CHAR);
 		board.push_back(row);
 	}
-	if (!seenPlayerChar)	pushError(ErrorType::MissingPlayerChar, nullptr);
-	if (!seenEndChar)		pushError(ErrorType::MissingEndChar, nullptr);
+	if (!seenPlayerChar) pushError(ErrorType::MissingPlayerChar, nullptr);
+	if (!seenEndChar) pushError(ErrorType::MissingEndChar, nullptr);
 	return board;
 }
 

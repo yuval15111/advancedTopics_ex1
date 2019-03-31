@@ -22,16 +22,6 @@
 #define HITWALL 1
 #define HITBOOKMARK 2
 
-using namespace std;
-using MazeRow = vector<char>;
-using MazeBoard = vector<MazeRow>;
-
-enum class Action {
-	UP, DOWN, RIGHT, LEFT, BOOKMARK, NO_ACTION
-};
-
-Action operator!(const Action& a);
-
 enum class ErrorType {
 	MissingInput, MissingOutput, BadInputAddress, BadOutputAddress,
 	MaxStepsError, RowsError, ColsError,
@@ -40,42 +30,51 @@ enum class ErrorType {
 	WrongChar
 };
 
-typedef pair<ErrorType, string> Pair;
+enum class Action {
+	UP, DOWN, RIGHT, LEFT, BOOKMARK, NO_ACTION
+};
+
+using namespace std;
+using MazeRow = vector<char>;
+using MazeBoard = vector<MazeRow>;
+using Coordinate = pair<size_t, size_t>;
+using Pair = pair<ErrorType, string>;
+using ErrorList = vector<Pair>;
 typedef void(*Func) (const string * str);
-typedef vector<Pair> ErrorList;
-typedef map<ErrorType, Func> FuncMap;
-typedef pair<size_t, size_t> Coordinate;
+
+Action operator!(const Action& a);
 
 void printWinMessage(const size_t numOfSteps);
 void printLostMessage(const size_t numOfSteps);
-
-void handleMissingInputError(const string * str);
-void handleMissingOutputError(const string * str);
-void handleBadInputAddressError(const string * str);
-void handleBadOutputAddressError(const string * str);
-void handleMaxStepsError(const string * str);
-void handleRowsError(const string * str);
-void handleColsError(const string * str);
-void handleMissingPlayerCharError(const string * str);
-void handleMissingEndCharError(const string * str);
-void handleMoreThanOnePlayerCharError(const string * str);
-void handleMoreThanOneEndCharError(const string * str);
-void handleWrongCharError(const string * str);
+void printMissingInputError(const string * str);
+void printMissingOutputError(const string * str);
+void printBadInputAddressError(const string * str);
+void printBadOutputAddressError(const string * str);
+void printMaxStepsError(const string * str);
+void printRowsError(const string * str);
+void printColsError(const string * str);
+void printMissingPlayerCharError(const string * str);
+void printMissingEndCharError(const string * str);
+void printMoreThanOnePlayerCharError(const string * str);
+void printMoreThanOneEndCharError(const string * str);
+void printWrongCharError(const string * str);
 
 struct Errors {
-	FuncMap fmap = {
-		{ErrorType::BadInputAddress, &handleBadInputAddressError},
-		{ErrorType::BadOutputAddress, &handleBadOutputAddressError},
-		{ErrorType::MaxStepsError, &handleMaxStepsError},
-		{ErrorType::RowsError, &handleRowsError},
-		{ErrorType::ColsError, &handleColsError},
-		{ErrorType::MissingPlayerChar, &handleMissingPlayerCharError},
-		{ErrorType::MissingEndChar, &handleMissingEndCharError},
-		{ErrorType::MoreThanOnePlayerChar, &handleMoreThanOnePlayerCharError},
-		{ErrorType::MoreThanOneEndChar, &handleMoreThanOneEndCharError},
-		{ErrorType::WrongChar, &handleWrongCharError}
+	map<ErrorType, Func> fmap = {
+		{ErrorType::MissingInput, &printMissingInputError},
+		{ErrorType::MissingOutput, &printMissingOutputError},
+		{ErrorType::BadInputAddress, &printBadInputAddressError},
+		{ErrorType::BadOutputAddress, &printBadOutputAddressError},
+		{ErrorType::MaxStepsError, &printMaxStepsError},
+		{ErrorType::RowsError, &printRowsError},
+		{ErrorType::ColsError, &printColsError},
+		{ErrorType::MissingPlayerChar, &printMissingPlayerCharError},
+		{ErrorType::MissingEndChar, &printMissingEndCharError},
+		{ErrorType::MoreThanOnePlayerChar, &printMoreThanOnePlayerCharError},
+		{ErrorType::MoreThanOneEndChar, &printMoreThanOneEndCharError},
+		{ErrorType::WrongChar, &printWrongCharError}
 	};
-	ErrorList list;
+	vector<pair<ErrorType, string>> list;
 };
 
 vector<string> split(string str, char delimiter);
