@@ -21,13 +21,13 @@
     <ClCompile Include="FileHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Maze.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MainAux.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,10 +38,10 @@
     <ClInclude Include="FileHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Maze.h">
+    <ClInclude Include="MainAux.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainAux.h">
+    <ClInclude Include="Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

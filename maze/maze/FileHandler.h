@@ -1,24 +1,27 @@
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
 
-#include "Maze.h"
+#include "Manager.h"
 
 class FileHandler {
 private:
-	ifstream m_fin;
-	ofstream m_fout;
-	Errors m_errors;
+	ifstream				m_fin;
+	ofstream				m_fout;
+	Errors					m_errors;
+	bool					checkErrors();
+	inline void				pushError(ErrorType type, const string & str) { m_errors.list.push_back(Pair(type, str)); }
+	string					getName(string & line);
+	size_t					getIntValue(const char * input, const ErrorType error, string & line);
+	MazeBoard				getBoard(const size_t rows, const size_t cols, Coordinate & playerLocation, Coordinate & endLocation, string & line);
+	void					handleSpecialChar(const char c, Coordinate & location, const size_t i, const size_t j, bool & seenChar, string & line, const ErrorType e);
+	void					handleInvalidChar(const char c, const size_t i, const size_t j);
 
 public:
-	FileHandler(char* argv[]);
-	Maze * parseInput();
+	FileHandler(int argc, char* argv[]);
 	//~FileHandler();
-	string getName();
-	size_t getIntValue(const char * input, const ErrorType error);
-	vector<string> split(string str, char delimiter);
-	MazeBoard getBoard(size_t rows, size_t cols, Coord & playerLocation, Coord & endLocation);
-	inline void pushError(ErrorType type, const string & str) {	m_errors.list.push_back(Pair(type, str)); }
-	inline const Errors getErrors() { return m_errors; }
+	Manager *				parseInput();
+	inline const bool		noErrors() { return m_errors.list.size() == 0; }
+	
 };
 
 #endif

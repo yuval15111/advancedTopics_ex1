@@ -1,26 +1,28 @@
 #include "Player.h"
 
-Player::Player() : m_numOfSteps(0) {
-	m_bookmark.set(INT_MAX, INT_MAX);
-	m_currentLocation.set(0, 0);
+Player::Player() { 
+	m_numOfSteps = 1; // first step in our implementation will be BOOKMARK, so to simplify the code we begin counting steps from 1
+	m_bookmark = make_pair(0, 0); // first bookmark in starting point
+	m_location = make_pair(INT_MAX, INT_MAX);
 	updatePath();
-	updateMapping(m_currentLocation, SPACE_CHAR);
+	updateMapping(m_location, SPACE_CHAR);
+	m_action = Action::NO_ACTION;
 }
 
-void Player::updateLocation(Action a, bool undo) {
-	a = undo ? !a : a;
-	switch (a) {
+void Player::updateLocation(bool undo) {
+	m_action = undo ? !m_action : m_action;
+	switch (m_action) {
 	case Action::UP:
-		m_currentLocation.row--;
+		m_location.first--;
 		break;
 	case Action::DOWN:
-		m_currentLocation.row++;
+		m_location.first++;
 		break;
 	case Action::LEFT:
-		m_currentLocation.col--;
+		m_location.second--;
 		break;
 	case Action::RIGHT:
-		m_currentLocation.col++;
+		m_location.second++;
 		break;
 	}
 }
@@ -47,9 +49,9 @@ void Player::updateLocation(Action a, bool undo) {
 	}
 }*/
 
-void Player::updatePath(bool undo) {
-	if (undo == false) {
-		Coord copy = m_currentLocation;
+void Player::updatePath(const bool undo) {
+	if (!undo) {
+		Coordinate copy = make_pair(m_location.first, m_location.second);
 		m_path.push_back(copy);
 	}
 	else {
@@ -57,79 +59,48 @@ void Player::updatePath(bool undo) {
 	}
 }
 
-void Player::updateMapping(Coord loc, char c) {
-	Coordinate l = make_pair(loc.row, loc.col);
-	m_mazeMapping[l] = c;
+void Player::updateMapping(const Coordinate loc, char c) {
+	m_mazeMapping[loc] = c;
 }
 
 Action Player::move() {
-	Action action;
-	vector<Action> exclusions;
 	m_numOfSteps++;
-	if (m_path.size() == 1) { // didn't move yet
-		if (m_bookmark.row == INT_MAX) { // first step - bookmark
-			m_bookmark.set(0, 0);
-			return Action::BOOKMARK;
-		}
-	}
-	else { // size > 0, after first two steps
-		// handle more exclusions
-		// understand what is the best path to come back after all four ways were visited
-		findExclusions(exclusions);
-	}
-	action = shuffle(exclusions);
-	updateLocation(action);
-	updateMapping(m_currentLocation, SPACE_CHAR);
+	generateAction(findExclusions());
+	updateLocation();
+	updateMapping(m_location, SPACE_CHAR);
 	updatePath();
-	return action;
+	return m_action;
 }
 
 // we update here the mapping with the wall we saw, the player location and undo the path
-void Player::hitWall(Action a)
+void Player::hitWall()
 {
-	updateMapping(m_currentLocation, WALL_CHAR);
-	updateLocation(a, true); // undo
+	updateMapping(m_location, WALL_CHAR);
+	updateLocation(true); // undo
 }
 
 void Player::hitBookmark()
 {
 }
 
-Action Player::shuffle(vector<Action> exclusions) {
-	Action action;
+void Player::generateAction(vector<Action> exclusions) {
+	// generates an action until it finds an action not in exclusions
 	do {
-		action = Action(rand() % 4);
-	} while (inVector(action, exclusions));
-	return action;
+		m_action = Action(rand() % 4);
+	} while (inVector(exclusions));
 }
 
-bool Player::inVector(Action action, vector<Action> exclusions) {
+bool Player::inVector(vector<Action> exclusions) {
 	for (vector<Action>::iterator it = exclusions.begin(); it != exclusions.end(); ++it) {
-		if (*it == action)
+		if (*it == m_action)
 			return true;
 	}
 	return false;
 }
 
-void Player::findExclusions(vector<Action>& exclusions)
+vector<Action> Player::findExclusions()
 {
-	// exclusions.push_back(getLastRelativePoision());
-}
-
-// assumption: m_path.size() > 0
-Action Player::getLastRelativePoision()
-{
-	Coord lastCoord = m_path.back();
-	if (lastCoord.row < m_currentLocation.row) {
-		return Action::LEFT;
-	}
-	else if (lastCoord.row > m_currentLocation.row) {
-		return Action::RIGHT;
-	}
-	else if (lastCoord.col < m_currentLocation.col) {
-		return Action::DOWN;
-	}
-	else { // (lastCoord.col > m_currentLocation.col)
-		return Action::UP;
-	}
+	vector<Action> exclusions;
+	// exclusions.push_back(m_action);
+	return exclusions;
 }

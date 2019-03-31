@@ -1,51 +1,36 @@
-//#include "MainAux.h"
 #include "FileHandler.h"
-#include "Player.h"
 
 int main(int argc, char* argv[]) {
-	if (argc == 1) {
-		handleMissingInputError();
-	}
-	else if (argc == 2) {
-		handleMissingOutputError();
-	}
-	else {
-		FileHandler fileH(argv);
-		Errors errors = fileH.getErrors();
-		if (checkErrors(errors)) {
-			Maze * maze = fileH.parseInput();
-			if (maze != nullptr) {
-				Player * player = new Player();
-				for (size_t i = 0; i < maze->m_maxSteps; ++i) {
-					Action action = player->move();
-					maze->execute(action);
-					char c = maze->getCoordValue(maze->getPlayerLocation());
-					if (c == END_CHAR) {
-						// printWinMessage(i);
-						// break;
-					}
-					if (c == WALL_CHAR) {
-						player->hitWall(action);
-						maze->execute(action, true); //undo
-						// should implement undo for player as well
-					}
-					//if (maze->getPlayerLocation() == "bookmark" && action != Action::BOOKMARK) {
-						// player->hitbookmark();
-					//}
-					maze->printBoard();
-				}
-				// We lost in the maze
-				//if (!maze->hasReachedDestination()) {
-					//printLostMessage(maze->m_maxSteps);
-				//}
-				//maze->printBoard();
+
+	/* ================================= FILES VALIDATION AND PARSING ================================= */
+
+	FileHandler fileH(argc, argv);
+	if (!fileH.noErrors()) return EXIT_FAILURE;						// IO Errors - can't parse!
+	Manager * manager = fileH.parseInput();
+	if (manager == nullptr)	return EXIT_FAILURE;					// Parsing Errors - can't play!
+
+	/* ========================================== GAME FLOW ========================================== */
+
+	Player * player = manager->createPlayer();						// PLAYER: LET'S GO!
+	for (size_t i = 1; i <= manager->getMaxSteps(); ++i) {
+		Action action = player->move();								// PLAYER: THIS IS MY MOVE!
+		if (action == Action::BOOKMARK)	manager->bookmark();
+		else {
+			manager->execute(action);								// MANAGER: OK, LET ME WRITE THAT DOWN...
+			if (manager->playerHitsEndChar()) {
+				printWinMessage(i);									// MANAGER: OMG YOU DID IT! I ALWAYS BELIEVED IN YOU
+				return EXIT_SUCCESS;								// PLAYER: YAY!
+			}
+			if (manager->playerHitsWallChar()) {
+				player->hitWall();									// PLAYER: OUCH!!
+				manager->execute(action, true); 					// MANAGER: SORRY PAL, TRY AGAIN
+			}
+			if (manager->playerHitsBookmark()) {					// MANAGER: YOU'RE RIGHT... HERE! <POINTING AT MAP>
+				player->hitBookmark();								// PLAYER: OHHH I REMEMBER THAT PLACE!
 			}
 		}
-		int x = 3;
+		manager->printBoard();
 	}
-}
-State checkStateInMaze(Player* player, Maze * maze) {
-	 //if (player.m_currentLocation == player.bookmark) return BOOKMARK;
-	// else if (maze.currentLocation)
-	return State::END;
+	printLostMessage(manager->getMaxSteps());							// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!
+	int x = 3;
 }

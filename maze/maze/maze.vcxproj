@@ -119,12 +119,12 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainAux.cpp" />
-    <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FileHandler.h" />
     <ClInclude Include="MainAux.h" />
-    <ClInclude Include="Maze.h" />
+    <ClInclude Include="Manager.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
