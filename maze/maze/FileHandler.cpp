@@ -70,6 +70,8 @@ size_t FileHandler::getIntValue(const char * input, const ErrorType error, strin
 		vector<string> splitted = split(line, SPACE_CHAR);
 		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0)
 			pushError(error, line);
+
+		// TODO: if there is an error in splitted and there is not [2] its a bug
 		result = (size_t)stoi(splitted[2]);
 		if (result == 0)
 			pushError(error, line);

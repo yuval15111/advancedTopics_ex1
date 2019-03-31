@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <time.h>
 
 Player::Player() { 
 	m_numOfSteps = 1; // first step in our implementation will be BOOKMARK, so to simplify the code we begin counting steps from 1
@@ -84,6 +85,7 @@ void Player::hitBookmark()
 }
 
 void Player::generateAction(vector<Action> exclusions) {
+	srand(time(0));
 	// generates an action until it finds an action not in exclusions
 	do {
 		m_action = Action(rand() % 4);
