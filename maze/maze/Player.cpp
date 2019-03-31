@@ -101,6 +101,40 @@ bool Player::inVector(vector<Action> exclusions) {
 vector<Action> Player::findExclusions()
 {
 	vector<Action> exclusions;
-	// exclusions.push_back(m_action);
+	char up = m_mazeMapping[m_location + Action::UP];
+	char down = m_mazeMapping[m_location + Action::DOWN];
+	char left = m_mazeMapping[m_location + Action::LEFT];
+	char right = m_mazeMapping[m_location + Action::RIGHT];
+	
+	vector <char> directions = { up,down,right,left };
+	vector <int> visit = { 0,0,0,0 };
+	int space = 0;
+	int wall = 0;
+
+	for (int i = 0; i < 4; ++i) {
+		if (directions[i] == WALL_CHAR) { 
+			exclusions.push_back(static_cast<Action>(i));
+
+			// In this location we hit a wall
+			visit[i] = 2;
+			wall++;
+		}
+		else if (directions[i] == SPACE_CHAR) {
+
+			// we visited in this location
+			visit[i] = 1;
+			space++;
+		}
+	}
+
+	// If we visited in all the directions
+	if ((wall + space) == 4 || space == 4) return exclusions;
+
+	// If we doesnt visited in all the directions we will push the locations that we visit
+	else {
+		for (int j = 0; j < 4; ++j) { if (visit[j] == 1) exclusions.push_back(static_cast<Action>(j)); };
+	}
+
 	return exclusions;
 }
+
