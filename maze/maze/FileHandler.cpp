@@ -1,15 +1,21 @@
 #include "FileHandler.h"
 
-/*FileHandler::~FileHandler()
+FileHandler::~FileHandler()
 {
-	delete(&m_fin);
+	m_fin.close();
+	m_fout.close();
+	/*delete(&m_fin);
 	delete(&m_fout);
 	delete(&m_errors.fmap);
 	delete(&m_errors.list);
-	delete(&m_errors);
-}*/
+	delete(&m_errors);*/
+}
 
-FileHandler::FileHandler(int argc, char * argv[]) : m_fin(setAbsolute(argv, 1)), m_fout(setAbsolute(argv, 2)) {
+FileHandler::FileHandler(int argc, char * argv[]) {
+	const char * in = setAbsolute(argv, 1);
+	const char * out = setAbsolute(argv, 2);
+	m_fin.open(argv[1]);
+	m_fout.open(argv[2]);
 	if (argc == 1) {
 		pushError(ErrorType::MissingInput, nullptr);
 	}
@@ -19,7 +25,7 @@ FileHandler::FileHandler(int argc, char * argv[]) : m_fin(setAbsolute(argv, 1)),
 	else if (!m_fin.good()) {
 		pushError(ErrorType::BadInputAddress, argv[1]);
 	}
-	else if (!m_fout.good() || !m_fout.fail()) {
+	else if (!m_fout.good()) {
 		pushError(ErrorType::BadOutputAddress, argv[2]);
 	}
 }
@@ -124,6 +130,10 @@ void FileHandler::handleInvalidChar(const char c, const size_t i, const size_t j
 	str[1] = (char)i;
 	str[2] = (char)j;
 	pushError(ErrorType::WrongChar, str);
+}
+
+void FileHandler::pushActionToOutputFile(char c) {
+	m_fout << c << endl;
 }
 
 

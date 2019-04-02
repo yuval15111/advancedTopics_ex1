@@ -18,10 +18,10 @@ private:
 
 public:
 	FileHandler(int argc, char* argv[]);
-	//~FileHandler();
+	~FileHandler();
 	Manager *				parseInput();
 	inline bool				noErrors() { return m_errors.list.size() == 0; }
-	
+	void					pushActionToOutputFile(char c);
 };
 
 #endif

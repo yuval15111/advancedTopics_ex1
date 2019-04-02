@@ -119,6 +119,21 @@ const char * setAbsolute(char * args[], int arg) {
 	return path.c_str();
 }
 
+char getActionChar(const Action& a) {
+	switch (a) {
+	case Action::UP:
+		return 'U';
+	case Action::DOWN:
+		return 'D';
+	case Action::LEFT:
+		return 'L';
+	case Action::RIGHT:
+		return 'R';
+	default:
+		return 'B';
+	}
+}
+
 vector<string> split(string str, char delimiter) {
 	vector<string> v = {};
 	size_t currSpaceIndex = 0, lastSpaceIndex = -1;
