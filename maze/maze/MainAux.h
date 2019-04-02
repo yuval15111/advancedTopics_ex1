@@ -42,25 +42,25 @@ using MazeBoard = vector<MazeRow>;
 using Coordinate = pair<size_t, size_t>;
 using Pair = pair<ErrorType, string>;
 using ErrorList = vector<Pair>;
-typedef void(*Func) (const string * str);
+typedef void(*Func) (const string & str);
 
 Action operator!(const Action& a);
 Coordinate operator+(Coordinate a, const Action & b);
 
 void printWinMessage(const size_t numOfSteps);
 void printLostMessage(const size_t numOfSteps);
-void printMissingInputError(const string * str);
-void printMissingOutputError(const string * str);
-void printBadInputAddressError(const string * str);
-void printBadOutputAddressError(const string * str);
-void printMaxStepsError(const string * str);
-void printRowsError(const string * str);
-void printColsError(const string * str);
-void printMissingPlayerCharError(const string * str);
-void printMissingEndCharError(const string * str);
-void printMoreThanOnePlayerCharError(const string * str);
-void printMoreThanOneEndCharError(const string * str);
-void printWrongCharError(const string * str);
+void printMissingInputError(const string & str);
+void printMissingOutputError(const string & str);
+void printBadInputAddressError(const string & str);
+void printBadOutputAddressError(const string & str);
+void printMaxStepsError(const string & str);
+void printRowsError(const string & str);
+void printColsError(const string & str);
+void printMissingPlayerCharError(const string & str);
+void printMissingEndCharError(const string & str);
+void printMoreThanOnePlayerCharError(const string & str);
+void printMoreThanOneEndCharError(const string & str);
+void printWrongCharError(const string & str);
 
 struct Errors {
 	map<ErrorType, Func> fmap = {

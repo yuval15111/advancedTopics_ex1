@@ -4,11 +4,6 @@ FileHandler::~FileHandler()
 {
 	m_fin.close();
 	m_fout.close();
-	/*delete(&m_fin);
-	delete(&m_fout);
-	delete(&m_errors.fmap);
-	delete(&m_errors.list);
-	delete(&m_errors);*/
 }
 
 FileHandler::FileHandler(int argc, char * argv[]) {
@@ -20,10 +15,12 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 	m_fout.open(argv[2]);
 	cout << "After openning fout" << endl;
 	if (argc == 1) {
-		pushError(ErrorType::MissingInput, nullptr);
+		pushError(ErrorType::MissingInput, string());
+		cout << "end1" << endl;
 	}
 	else if (argc == 2) {
-		pushError(ErrorType::MissingOutput, nullptr);
+		pushError(ErrorType::MissingOutput, string());
+		cout << "end2" << endl;
 	}
 	else if (!m_fin.good()) {
 		pushError(ErrorType::BadInputAddress, argv[1]);
@@ -31,7 +28,7 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 	else if (!m_fout.good()) {
 		pushError(ErrorType::BadOutputAddress, argv[2]);
 	}
-	cout << "End of function" << endl;
+	cout << "end4" << endl;
 }
 
 bool FileHandler::checkErrors() {
@@ -39,7 +36,7 @@ bool FileHandler::checkErrors() {
 	for (ErrorList::iterator it = m_errors.list.begin(); it != m_errors.list.end(); ++it) {
 		Func f = m_errors.fmap[it->first];
 		string str = it->second;
-		f(&str);
+		f(str);
 	}
 	m_errors.list.clear();
 	return false;
@@ -112,8 +109,8 @@ MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate
 				row.push_back(SPACE_CHAR);
 		board.push_back(row);
 	}
-	if (!seenPlayerChar) pushError(ErrorType::MissingPlayerChar, nullptr);
-	if (!seenEndChar) pushError(ErrorType::MissingEndChar, nullptr);
+	if (!seenPlayerChar) pushError(ErrorType::MissingPlayerChar, string());
+	if (!seenEndChar) pushError(ErrorType::MissingEndChar, string());
 	return board;
 }
 
@@ -124,7 +121,7 @@ void FileHandler::handleSpecialChar(const char c, Coordinate & location, const s
 		if (c == PLAYER_CHAR) line[j] = SPACE_CHAR; // not necessary as '@' character
 	}
 	else { // only one player char allowed!
-		pushError(e, nullptr);
+		pushError(e, string());
 	}
 }
 

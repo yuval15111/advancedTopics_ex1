@@ -43,74 +43,74 @@ void printLostMessage(const size_t numOfSteps) {
 	cout << "Failed to solve maze in " << numOfSteps << " steps" << endl;
 }
 
-void printMissingInputError(const string * str) {
+void printMissingInputError(const string & str) {
 	(void)str;
 	cout << "Missing maze file argument in command line" << endl;
 }
 
-void printMissingOutputError(const string * str) {
+void printMissingOutputError(const string & str) {
 	(void)str;
 	cout << "Missing output file argument in command line" << endl;
 }
 
-void printBadInputAddressError(const string * str)
+void printBadInputAddressError(const string & str)
 {
 	cout << "Command line argument for maze: " << str << " doesn't lead to a maze file or leads to a file that cannot be opened" << endl;
 }
 
-void printBadOutputAddressError(const string * str)
+void printBadOutputAddressError(const string & str)
 {
 	cout << "Command line argument for output file: " << str << " points to a bad path or to a file that already exists" << endl;
 }
 
-void printMaxStepsError(const string * str)
+void printMaxStepsError(const string & str)
 {
 	cout << "expected in line 2 - MaxSteps = <num>" << endl;
-	cout << "got: " << *str << endl;
+	cout << "got: " << str << endl;
 }
 
-void printRowsError(const string * str)
+void printRowsError(const string & str)
 {
 	cout << "expected in line 3 - Rows = <num>" << endl;
-	cout << "got: " << *str << endl;
+	cout << "got: " << str << endl;
 }
 
-void printColsError(const string * str)
+void printColsError(const string & str)
 {
 	cout << "expected in line 4 - Cols = <num>" << endl;
-	cout << "got: " << *str << endl;
+	cout << "got: " << str << endl;
 }
 
-void printMissingPlayerCharError(const string * str)
+void printMissingPlayerCharError(const string & str)
 {
 	(void)str;
 	cout << "Missing @ in maze" << endl;
 }
 
-void printMissingEndCharError(const string * str)
+void printMissingEndCharError(const string & str)
 {
 	(void)str;
 	cout << "Missing $ in maze" << endl;
 }
 
-void printMoreThanOnePlayerCharError(const string * str)
+void printMoreThanOnePlayerCharError(const string & str)
 {
 	(void)str;
 	cout << "More than one @ in maze" << endl;
 }
 
-void printMoreThanOneEndCharError(const string * str)
+void printMoreThanOneEndCharError(const string & str)
 {
 	(void)str;
 	cout << "More than one $ in maze" << endl;
 }
 
-void printWrongCharError(const string * str)
+void printWrongCharError(const string & str)
 {
-	if ((*str)[0] == 9)
-		cout << "Wrong character in maze: TAB in row " << (int)(*str)[1] << ", col " << (int)(*str)[2] << endl;
+	if (str[0] == 9)
+		cout << "Wrong character in maze: TAB in row " << (int)str[1] << ", col " << (int)str[2] << endl;
 	else
-		cout << "Wrong character in maze: " << str[0] << " in row " << (int)(*str)[1] << ", col " << (int)(*str)[2] << endl;
+		cout << "Wrong character in maze: " << str[0] << " in row " << (int)str[1] << ", col " << (int)str[2] << endl;
 }
 
 const char * setAbsolute(char * args[], int arg) {
