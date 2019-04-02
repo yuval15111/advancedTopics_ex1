@@ -80,7 +80,6 @@ struct Errors {
 	vector<pair<ErrorType, string>> list;
 };
 
-bool doesExist(char * path);
 const char * setAbsolute(char * args[], int arg);
 vector<string> split(string str, char delimiter);
 void updateCoordinate(Coordinate & c, const size_t i, const size_t j);

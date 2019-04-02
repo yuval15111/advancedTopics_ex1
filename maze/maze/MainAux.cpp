@@ -42,10 +42,12 @@ void printLostMessage(const size_t numOfSteps) {
 }
 
 void printMissingInputError(const string * str) {
+	(void)str;
 	cout << "Missing maze file argument in command line" << endl;
 }
 
 void printMissingOutputError(const string * str) {
+	(void)str;
 	cout << "Missing output file argument in command line" << endl;
 }
 
@@ -79,21 +81,25 @@ void printColsError(const string * str)
 
 void printMissingPlayerCharError(const string * str)
 {
+	(void)str;
 	cout << "Missing @ in maze" << endl;
 }
 
 void printMissingEndCharError(const string * str)
 {
+	(void)str;
 	cout << "Missing $ in maze" << endl;
 }
 
 void printMoreThanOnePlayerCharError(const string * str)
 {
+	(void)str;
 	cout << "More than one @ in maze" << endl;
 }
 
 void printMoreThanOneEndCharError(const string * str)
 {
+	(void)str;
 	cout << "More than one $ in maze" << endl;
 }
 
@@ -103,11 +109,6 @@ void printWrongCharError(const string * str)
 		cout << "Wrong character in maze: TAB in row " << (int)(*str)[1] << ", col " << (int)(*str)[2] << endl;
 	else
 		cout << "Wrong character in maze: " << str[0] << " in row " << (int)(*str)[1] << ", col " << (int)(*str)[2] << endl;
-}
-
-bool doesExist(char * path)
-{
-	return false;
 }
 
 const char * setAbsolute(char * args[], int arg) {
