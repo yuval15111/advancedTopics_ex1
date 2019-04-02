@@ -22,6 +22,8 @@ int main(int argc, char* argv[]) {
 			if (manager->playerHitsEndChar()) {
 				printWinMessage(i);									// MANAGER: OMG YOU DID IT! I ALWAYS BELIEVED IN YOU
 				fileH.pushActionToOutputFile('!');
+				delete player;
+				delete manager;
 				return EXIT_SUCCESS;								// PLAYER: YAY!
 			}
 			if (manager->playerHitsWallChar()) {
@@ -36,4 +38,6 @@ int main(int argc, char* argv[]) {
 	}
 	fileH.pushActionToOutputFile('X');
 	printLostMessage(manager->getMaxSteps());							// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!
+	delete player;
+	delete manager;
 }
