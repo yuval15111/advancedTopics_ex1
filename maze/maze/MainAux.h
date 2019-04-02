@@ -78,6 +78,7 @@ struct Errors {
 		{ErrorType::WrongChar, &printWrongCharError}
 	};
 	vector<pair<ErrorType, string>> list;
+	bool noErrors = true;
 };
 
 char getActionChar(const Action& a);

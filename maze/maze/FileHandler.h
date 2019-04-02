@@ -21,7 +21,7 @@ public:
 	FileHandler(int argc, char* argv[]);
 	~FileHandler();
 	Manager *				parseInput();
-	inline bool				noErrors() { return m_errors.list.size() == 0; }
+	inline bool				noErrors() { return m_errors.noErrors; }
 	void					pushActionToOutputFile(char c);
 };
 

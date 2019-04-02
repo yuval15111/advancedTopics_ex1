@@ -24,15 +24,19 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 	}
 	else if (!m_fin.good()) {
 		pushError(ErrorType::BadInputAddress, argv[1]);
+		cout << "end3" << endl;
 	}
 	else if (!m_fout.good()) {
 		pushError(ErrorType::BadOutputAddress, argv[2]);
+		cout << "end4" << endl;
 	}
-	cout << "end4" << endl;
+	cout << "end5" << endl;
+	checkErrors();
 }
 
 bool FileHandler::checkErrors() {
 	if (m_errors.list.size() == 0) return true;
+	m_errors.noErrors = false;
 	for (ErrorList::iterator it = m_errors.list.begin(); it != m_errors.list.end(); ++it) {
 		Func f = m_errors.fmap[it->first];
 		string str = it->second;
@@ -59,7 +63,9 @@ Manager * FileHandler::parseInput() {
 		board = getBoard(rowsNum, colsNum, playerLocation, endLocation, line);
 		if (checkErrors()) // no errors, maze file is valid
 			return new Manager(name, maxSteps, rowsNum, colsNum, board, playerLocation, endLocation);
+		cout << "Bad maze in maze file:" << endl;
 	}
+	cout << "Bad maze in file header:" << endl;
 	return nullptr; // maze file is not valid
 }
 

@@ -5,6 +5,7 @@ int main(int argc, char* argv[]) {
 	/* ================================= FILES VALIDATION AND PARSING ================================= */
 
 	FileHandler fileH(argc, argv);
+	cout << "Finished c'tor" << endl;
 	if (!fileH.noErrors()) return EXIT_FAILURE;						// IO Errors - can't parse!
 	Manager * manager = fileH.parseInput();
 	if (manager == nullptr)	return EXIT_FAILURE;					// Parsing Errors - can't play!
