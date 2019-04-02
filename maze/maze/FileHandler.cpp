@@ -44,7 +44,6 @@ bool FileHandler::checkErrors() {
 
 Manager * FileHandler::parseInput() {
 	string line;
-
 	// Manager future fields
 	MazeBoard board;
 	string name;
@@ -71,19 +70,21 @@ string FileHandler::getName(string & line) {
 	return nullptr;
 }
 
-size_t FileHandler::getIntValue(const char * input, const ErrorType error, string & line) {
+size_t FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
 	size_t result;
+	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*");
+	const regex numReg("[1-9][0-9]*");
+	smatch match;
 	if (getline(m_fin, line)) {
-		vector<string> splitted = split(line, SPACE_CHAR);
-		if (splitted.size() != 3 || splitted[0].compare(input) != 0 || splitted[1].compare("=") != 0)
+		if (!regex_match(line, reg)) {
 			pushError(error, line);
-
-		// TODO: if there is an error in splitted and there is not [2] its a bug
-		result = (size_t)stoi(splitted[2]);
-		if (result == 0)
-			pushError(error, line);
+			return -1;
+		}
+		regex_search(line, match, numReg);
+		return stoi(match[0]);
 	}
-	return result;
+	pushError(error, line);
+	return -1;
 }
 
 MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate & playerLocation, Coordinate & endLocation, string & line) {
