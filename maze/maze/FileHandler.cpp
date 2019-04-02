@@ -71,7 +71,6 @@ string FileHandler::getName(string & line) {
 }
 
 size_t FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
-	size_t result;
 	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*");
 	const regex numReg("[1-9][0-9]*");
 	smatch match;
