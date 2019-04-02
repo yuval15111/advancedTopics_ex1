@@ -4,7 +4,7 @@
 Player::Player() { 
 	m_numOfSteps = 1; // first step in our implementation will be BOOKMARK, so to simplify the code we begin counting steps from 1
 	m_bookmark = make_pair(0, 0); // first bookmark in starting point
-	m_location = make_pair(INT_MAX, INT_MAX);
+	m_location = make_pair(0, 0);
 	updatePath();
 	updateMapping(m_location, SPACE_CHAR);
 	m_action = Action::NO_ACTION;
@@ -85,7 +85,7 @@ void Player::hitBookmark()
 }
 
 void Player::generateAction(vector<Action> exclusions) {
-	srand(time(0));
+	srand((unsigned int)time(0));
 	// generates an action until it finds an action not in exclusions
 	do {
 		m_action = Action(rand() % 4);

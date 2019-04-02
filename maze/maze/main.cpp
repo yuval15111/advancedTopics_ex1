@@ -32,5 +32,4 @@ int main(int argc, char* argv[]) {
 		manager->printBoard();
 	}
 	printLostMessage(manager->getMaxSteps());							// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!
-	int x = 3;
 }

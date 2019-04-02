@@ -29,7 +29,7 @@ public:
 	inline bool				playerHitsEndChar() { return getCoordValue() == END_CHAR; }
 	inline bool				playerHitsWallChar() { return getCoordValue() == WALL_CHAR; }
 	inline bool				playerHitsBookmark() { return m_playerLocation == m_bookmark; }
-	inline const size_t		getMaxSteps() { return m_maxSteps; }
+	inline size_t			getMaxSteps() { return m_maxSteps; }
 	void					printBoard();
 };
 

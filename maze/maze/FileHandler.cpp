@@ -9,17 +9,17 @@
 	delete(&m_errors);
 }*/
 
-FileHandler::FileHandler(int argc, char * argv[]) : m_fin(argv[1]), m_fout(argv[2]) {
+FileHandler::FileHandler(int argc, char * argv[]) : m_fin(setAbsolute(argv, 1)), m_fout(setAbsolute(argv, 2)) {
 	if (argc == 1) {
 		pushError(ErrorType::MissingInput, nullptr);
 	}
 	else if (argc == 2) {
-		pushError(ErrorType::MissingInput, nullptr);
+		pushError(ErrorType::MissingOutput, nullptr);
 	}
 	else if (!m_fin.good()) {
 		pushError(ErrorType::BadInputAddress, argv[1]);
 	}
-	else if (!m_fout.good()) {
+	else if (!m_fout.good() || !m_fout.fail()) {
 		pushError(ErrorType::BadOutputAddress, argv[2]);
 	}
 }

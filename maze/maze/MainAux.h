@@ -10,6 +10,8 @@
 #include <utility>
 #include <fstream>
 
+#define MAX_INT 2147483647
+
 #define MAXSTEPS "MaxSteps"
 #define ROWS "Rows"
 #define COLS "Cols"
@@ -78,6 +80,8 @@ struct Errors {
 	vector<pair<ErrorType, string>> list;
 };
 
+bool doesExist(char * path);
+const char * setAbsolute(char * args[], int arg);
 vector<string> split(string str, char delimiter);
 void updateCoordinate(Coordinate & c, const size_t i, const size_t j);
 

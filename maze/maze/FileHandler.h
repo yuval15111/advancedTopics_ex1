@@ -20,7 +20,7 @@ public:
 	FileHandler(int argc, char* argv[]);
 	//~FileHandler();
 	Manager *				parseInput();
-	inline const bool		noErrors() { return m_errors.list.size() == 0; }
+	inline bool				noErrors() { return m_errors.list.size() == 0; }
 	
 };
 

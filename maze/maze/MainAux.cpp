@@ -62,19 +62,19 @@ void printBadOutputAddressError(const string * str)
 void printMaxStepsError(const string * str)
 {
 	cout << "expected in line 2 - MaxSteps = <num>" << endl;
-	cout << "got : " << *str << endl;
+	cout << "got: " << *str << endl;
 }
 
 void printRowsError(const string * str)
 {
 	cout << "expected in line 3 - Rows = <num>" << endl;
-	cout << "got : " << *str << endl;
+	cout << "got: " << *str << endl;
 }
 
 void printColsError(const string * str)
 {
 	cout << "expected in line 4 - Cols = <num>" << endl;
-	cout << "got : " << *str << endl;
+	cout << "got: " << *str << endl;
 }
 
 void printMissingPlayerCharError(const string * str)
@@ -105,16 +105,31 @@ void printWrongCharError(const string * str)
 		cout << "Wrong character in maze: " << str[0] << " in row " << (int)(*str)[1] << ", col " << (int)(*str)[2] << endl;
 }
 
+bool doesExist(char * path)
+{
+	return false;
+}
+
+const char * setAbsolute(char * args[], int arg) {
+	if ((*args[arg]) == '/') return args[arg]; // absolute
+	string path = string(args[0]) + "/" + string(args[arg]);
+	return path.c_str();
+}
+
 vector<string> split(string str, char delimiter) {
 	vector<string> v = {};
 	size_t currSpaceIndex = 0, lastSpaceIndex = -1;
 	while ((currSpaceIndex = str.find(delimiter, lastSpaceIndex + 1)) != std::string::npos) {
 		if (currSpaceIndex != 0) {
-			v.push_back(str.substr(lastSpaceIndex + 1, currSpaceIndex - lastSpaceIndex - 1));
+			if (lastSpaceIndex + 1 != currSpaceIndex)
+				v.push_back(str.substr(lastSpaceIndex + 1, currSpaceIndex - lastSpaceIndex - 1));
 			lastSpaceIndex = currSpaceIndex;
 		}
 	}
 	v.push_back(str.substr(lastSpaceIndex + 1));
+	if (v.size() < 3) {
+		v = { "","","" };
+	}
 	return v;
 }
 

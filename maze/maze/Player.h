@@ -7,8 +7,8 @@ class Player {
 	
 private:
 	size_t					m_numOfSteps = 0;
-	size_t					m_rowsNum = INT_MAX;
-	size_t					m_colsNum = INT_MAX;
+	size_t					m_rowsNum = MAX_INT;
+	size_t					m_colsNum = MAX_INT;
 	Coordinate				m_bookmark;
 	vector <Coordinate>		m_path;
 	Coordinate				m_location;
