@@ -29,6 +29,8 @@ Coordinate operator+(Coordinate a, const Action & b) {
 	case Action::RIGHT:
 		a.second++;
 		break;
+	default:
+		break;
 	}
 	return a;
 }
