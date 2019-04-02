@@ -25,6 +25,8 @@ void Player::updateLocation(bool undo) {
 	case Action::RIGHT:
 		m_location.second++;
 		break;
+	default:
+		break;
 	}
 }
 // TODO: previous implementation
