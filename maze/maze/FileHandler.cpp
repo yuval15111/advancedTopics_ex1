@@ -2,13 +2,12 @@
 
 FileHandler::~FileHandler()
 {
+	if (m_manager != nullptr) delete m_manager;
 	m_fin.close();
 	m_fout.close();
 }
 
 FileHandler::FileHandler(int argc, char * argv[]) {
-	//const char * in = setAbsolute(argv, 1);
-	//const char * out = setAbsolute(argv, 2);
 	cout << "Before openning fin" << endl;
 	m_fin.open(argv[1]);
 	cout << "After openning fin, before opening fout" << endl;
@@ -46,10 +45,10 @@ bool FileHandler::checkErrors() {
 	return false;
 }
 
-Manager * FileHandler::parseInput() {
+void FileHandler::parseInput() {
 	string line;
 	// Manager future fields
-	MazeBoard board;
+	MazeBoard board; 
 	string name;
 	size_t maxSteps, rowsNum, colsNum;
 	Coordinate playerLocation = make_pair(0, 0), endLocation = make_pair(0, 0);
@@ -62,11 +61,10 @@ Manager * FileHandler::parseInput() {
 	if (checkErrors()) { // no errors, lines 2-4 are valid
 		board = getBoard(rowsNum, colsNum, playerLocation, endLocation, line);
 		if (checkErrors()) // no errors, maze file is valid
-			return new Manager(name, maxSteps, rowsNum, colsNum, board, playerLocation, endLocation);
-		cout << "Bad maze in maze file:" << endl;
+			m_manager = new Manager(name, maxSteps, rowsNum, colsNum, board, playerLocation, endLocation);
+		else cout << "Bad maze in maze file:" << endl;
 	}
-	cout << "Bad maze in file header:" << endl;
-	return nullptr; // maze file is not valid
+	else cout << "Bad maze in file header:" << endl;
 }
 
 string FileHandler::getName(string & line) {
@@ -139,8 +137,14 @@ void FileHandler::handleInvalidChar(const char c, const size_t i, const size_t j
 	pushError(ErrorType::WrongChar, str);
 }
 
-void FileHandler::pushActionToOutputFile(char c) {
-	m_fout << c << endl;
+void FileHandler::pushActionsToOutputFile(vector<char> actions) {
+	for(const char & c : actions)
+		m_fout << c << endl;
+}
+
+void FileHandler::play()
+{
+
 }
 
 

@@ -9,6 +9,7 @@ private:
 	ifstream				m_fin;
 	ofstream				m_fout;
 	Errors					m_errors;
+	Manager *				m_manager = nullptr;
 	bool					checkErrors();
 	inline void				pushError(ErrorType type, const string & str) { m_errors.list.push_back(Pair(type, str)); }
 	string					getName(string & line);
@@ -20,9 +21,11 @@ private:
 public:
 	FileHandler(int argc, char* argv[]);
 	~FileHandler();
-	Manager *				parseInput();
+	inline Manager *		getManager() { return m_manager; }
+	void					parseInput();
 	inline bool				noErrors() { return m_errors.noErrors; }
-	void					pushActionToOutputFile(char c);
+	void					pushActionsToOutputFile(vector<char> actions);
+	void					play();
 };
 
 #endif

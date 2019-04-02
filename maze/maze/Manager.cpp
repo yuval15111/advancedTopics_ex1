@@ -1,13 +1,38 @@
 #include "Manager.h"
 
-/*Manager::~Manager()
+Manager::~Manager()
 {
-	for (size_t i = 0; i < m_rowsNum; i++) {
-		delete(&m_board[i]);
+	delete m_player;
+}
+
+vector<char> Manager::play() {
+	vector<char> actionsLst;
+	m_player = new Player();									// PLAYER: LET'S GO!
+	for (size_t i = 1; i <= m_maxSteps; ++i) {
+		Action action = m_player->move();								// PLAYER: THIS IS MY MOVE!
+		actionsLst.push_back(getActionChar(action));
+		if (action == Action::BOOKMARK)	bookmark();
+		else {
+			execute(action);										// MANAGER: OK, LET ME WRITE THAT DOWN...
+			if (playerHitsEndChar()) {
+				printWinMessage(i);									// MANAGER: OMG YOU DID IT! I ALWAYS BELIEVED IN YOU
+				actionsLst.push_back('!');
+				return actionsLst;
+			}
+			if (playerHitsWallChar()) {
+				m_player->hitWall();									// PLAYER: OUCH!!
+				execute(action, true); 								// MANAGER: SORRY PAL, TRY AGAIN
+			}
+			if (playerHitsBookmark()) {								// MANAGER: YOU'RE RIGHT... HERE! <POINTING AT MAP>
+				m_player->hitBookmark();								// PLAYER: OHHH I REMEMBER THAT PLACE!
+			}
+		}
+		//manager->printBoard();
 	}
-	delete(&m_board);
-	delete(&m_playerLocation);
-}*/
+	actionsLst.push_back('X');
+	printLostMessage(m_maxSteps);									// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!
+	return actionsLst;
+}
 
 void Manager::printBoard()
 {

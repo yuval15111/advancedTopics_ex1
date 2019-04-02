@@ -113,12 +113,6 @@ void printWrongCharError(const string & str)
 		cout << "Wrong character in maze: " << str[0] << " in row " << (int)str[1] << ", col " << (int)str[2] << endl;
 }
 
-const char * setAbsolute(char * args[], int arg) {
-	if ((*args[arg]) == '/') return args[arg]; // absolute
-	string path = string(args[0]) + "/" + string(args[arg]);
-	return path.c_str();
-}
-
 char getActionChar(const Action& a) {
 	switch (a) {
 	case Action::UP:
@@ -132,23 +126,6 @@ char getActionChar(const Action& a) {
 	default:
 		return 'B';
 	}
-}
-
-vector<string> split(string str, char delimiter) {
-	vector<string> v = {};
-	size_t currSpaceIndex = 0, lastSpaceIndex = -1;
-	while ((currSpaceIndex = str.find(delimiter, lastSpaceIndex + 1)) != std::string::npos) {
-		if (currSpaceIndex != 0) {
-			if (lastSpaceIndex + 1 != currSpaceIndex)
-				v.push_back(str.substr(lastSpaceIndex + 1, currSpaceIndex - lastSpaceIndex - 1));
-			lastSpaceIndex = currSpaceIndex;
-		}
-	}
-	v.push_back(str.substr(lastSpaceIndex + 1));
-	if (v.size() < 3) {
-		v = { "","","" };
-	}
-	return v;
 }
 
 void updateCoordinate(Coordinate & c, const size_t i, const size_t j) {
