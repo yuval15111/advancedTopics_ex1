@@ -19,7 +19,7 @@ public:
 			MazeBoard board, Coordinate playerLocation, Coordinate endLocation) :
 			m_name(name), m_maxSteps(maxSteps), m_rowsNum(rowsNum),
 			m_colsNum(colsNum),	m_board(board), m_playerLocation(playerLocation),
-			m_endLocation(endLocation),	m_bookmark(INT_MAX, INT_MAX) {};
+			m_endLocation(endLocation),	m_bookmark(0, 0) {};
 	//~Manager();
 
 	inline Player *			createPlayer() { return new Player(); }
