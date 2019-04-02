@@ -12,10 +12,13 @@ FileHandler::~FileHandler()
 }
 
 FileHandler::FileHandler(int argc, char * argv[]) {
-	const char * in = setAbsolute(argv, 1);
-	const char * out = setAbsolute(argv, 2);
+	//const char * in = setAbsolute(argv, 1);
+	//const char * out = setAbsolute(argv, 2);
+	cout << "Before openning fin" << endl;
 	m_fin.open(argv[1]);
+	cout << "After openning fin, before opening fout" << endl;
 	m_fout.open(argv[2]);
+	cout << "After openning fout" << endl;
 	if (argc == 1) {
 		pushError(ErrorType::MissingInput, nullptr);
 	}
@@ -28,6 +31,7 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 	else if (!m_fout.good()) {
 		pushError(ErrorType::BadOutputAddress, argv[2]);
 	}
+	cout << "End of function" << endl;
 }
 
 bool FileHandler::checkErrors() {
