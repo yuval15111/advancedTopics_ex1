@@ -33,7 +33,7 @@ enum class ErrorType {
 };
 
 enum class Action {
-	UP, DOWN, RIGHT, LEFT, BOOKMARK, NO_ACTION
+	UP, DOWN, RIGHT, LEFT, BOOKMARK
 };
 
 using namespace std;

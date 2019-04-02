@@ -7,7 +7,7 @@ Player::Player() {
 	m_location = make_pair(0, 0);
 	updatePath();
 	updateMapping(m_location, SPACE_CHAR);
-	m_action = Action::NO_ACTION;
+	m_action = Action::BOOKMARK;
 }
 
 void Player::updateLocation(bool undo) {

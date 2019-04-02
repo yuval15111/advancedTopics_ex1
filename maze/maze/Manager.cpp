@@ -47,6 +47,8 @@ void Manager::execute(Action a, const bool undo)
 		m_playerLocation.second++;
 		m_playerLocation.second %= m_colsNum;
 		break;
+	default:
+		break;
 	}
 }
 
