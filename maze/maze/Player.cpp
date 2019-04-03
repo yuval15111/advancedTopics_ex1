@@ -1,6 +1,8 @@
 #include "Player.h"
 #include <time.h>
 
+#define ABS(x,y) x > y ? x - y : y - x
+
 Player::Player() { 
 	m_numOfSteps = 1; // first step in our implementation will be BOOKMARK, so to simplify the code we begin counting steps from 1
 	m_bookmark = make_pair(0, 0); // first bookmark in starting point
@@ -14,10 +16,10 @@ void Player::updateLocation(bool undo) {
 	m_action = undo ? !m_action : m_action;
 	switch (m_action) {
 	case Action::UP:
-		m_location.first--;
+		m_location.first++;
 		break;
 	case Action::DOWN:
-		m_location.first++;
+		m_location.first--;
 		break;
 	case Action::LEFT:
 		m_location.second--;
@@ -84,6 +86,17 @@ void Player::hitWall()
 
 void Player::hitBookmark()
 {
+	if (m_bookmark == m_location) return;
+	else {
+		if (m_bookmark.first == m_location.first) { // Defines col dimention
+			m_colsNum = ABS(m_bookmark.second, m_location.second);
+			arrangeMapping(true);
+		} 
+		else if (m_bookmark.second == m_location.second) {
+			m_rowsNum = ABS(m_bookmark.first, m_location.first);
+			arrangeMapping(false);
+		}
+	}
 }
 
 void Player::generateAction(vector<Action> exclusions) {
@@ -141,5 +154,31 @@ vector<Action> Player::findExclusions()
 	}
 
 	return exclusions;
+}
+
+
+void Player::arrangeMapping(bool rows)
+{
+	map <Coordinate, char> newMapping;
+	if (rows) {
+		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
+			char& c = m_mazeMapping[(*it).first];
+			Coordinate newLocation = (*it).first;
+			if (newLocation.first < 0) newLocation.first = m_rowsNum + newLocation.first % m_rowsNum;
+			else newLocation.first %= m_rowsNum;
+			newMapping[newLocation] = c;
+		}
+	}
+	else {
+		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
+			char& c = m_mazeMapping[(*it).first];
+			Coordinate newLocation = (*it).first;
+			if (newLocation.first < 0) newLocation.second = m_rowsNum + newLocation.second % m_rowsNum;
+			else newLocation.second %= m_rowsNum;
+			newMapping[newLocation] = c;
+		}
+	}
+	m_mazeMapping.clear();
+	m_mazeMapping = newMapping;
 }
 

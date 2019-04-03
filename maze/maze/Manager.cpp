@@ -7,7 +7,7 @@ Manager::~Manager()
 
 /* main function of manager, where the game flow is */
 vector<char> Manager::play() {
-	vector<char> actionsLst;
+	vector<char> actionsLst = { 'B' };
 	m_player = new Player();									// PLAYER: LET'S GO!
 	for (size_t i = 1; i <= m_maxSteps; ++i) {
 		Action action = m_player->move();								// PLAYER: THIS IS MY MOVE!
@@ -28,7 +28,7 @@ vector<char> Manager::play() {
 				m_player->hitBookmark();								// PLAYER: OHHH I REMEMBER THAT PLACE!
 			}
 		}
-		//manager->printBoard();
+		printBoard();
 	}
 	actionsLst.push_back('X');
 	printLostMessage(m_maxSteps);									// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!

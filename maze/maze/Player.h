@@ -21,6 +21,7 @@ private:
 	void					generateAction(vector<Action> exclusions);
 	bool					inVector(vector<Action> exclusions);
 	vector<Action>			findExclusions();
+	void					arrangeMapping(bool rows);
 
 public:
 	Player();

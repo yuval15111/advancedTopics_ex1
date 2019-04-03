@@ -21,10 +21,10 @@ Action operator!(const Action& a) {
 Coordinate operator+(Coordinate a, const Action & b) {
 	switch (b) {
 	case Action::UP:
-		a.first--;
+		a.first++;
 		break;
 	case Action::DOWN:
-		a.first++;
+		a.first--;
 		break;
 	case Action::LEFT:
 		a.second--;

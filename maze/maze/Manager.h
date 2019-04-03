@@ -20,7 +20,7 @@ public:
 			MazeBoard board, Coordinate playerLocation, Coordinate endLocation) :
 			m_name(name), m_maxSteps(maxSteps), m_rowsNum(rowsNum),
 			m_colsNum(colsNum),	m_board(board), m_playerLocation(playerLocation),
-			m_endLocation(endLocation),	m_bookmark(0, 0) {};
+			m_endLocation(endLocation),	m_bookmark(playerLocation) {};
 	~Manager();
 
 	inline void				updateBookmark() { m_bookmark = m_playerLocation; }
