@@ -10,28 +10,22 @@ FileHandler::~FileHandler()
 /*	In the constructor we initialize ifstream m_fin and ofstream m_fout.
 	We also check here validity of the program arguments. */
 FileHandler::FileHandler(int argc, char * argv[]) {
-	cout << "Before openning fin" << endl;
-	m_fin.open(argv[1]);
-	cout << "After openning fin, before opening fout" << endl;
-	m_fout.open(argv[2]);
-	cout << "After openning fout" << endl;
-	if (argc == 1) {
-		pushError(ErrorType::MissingInput, string());
-		cout << "end1" << endl;
-	}
-	else if (argc == 2) {
+	if (argc < 3) {
+		if (argc == 1)
+			pushError(ErrorType::MissingInput, string());
 		pushError(ErrorType::MissingOutput, string());
-		cout << "end2" << endl;
 	}
-	else if (!m_fin.good()) {
-		pushError(ErrorType::BadInputAddress, argv[1]);
-		cout << "end3" << endl;
+	else {
+		m_fin.open(argv[1]);
+		if (!m_fin.good())
+			pushError(ErrorType::BadInputAddress, argv[1]); // bad maze path or file does not exist
+		if (!fileExists(argv[2])) { 
+			m_fout.open(argv[2]);
+			if (!m_fout.good())
+				pushError(ErrorType::BadOutputAddress, argv[2]); // bad output path
+		}
+		else pushError(ErrorType::BadOutputAddress, argv[2]); // output file already exists
 	}
-	else if (!m_fout.good() || fileExists(argv[2])) {
-		pushError(ErrorType::BadOutputAddress, argv[2]);
-		cout << "end4" << endl;
-	}
-	cout << "end5" << endl;
 	checkErrors();
 }
 
