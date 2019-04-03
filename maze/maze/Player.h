@@ -25,8 +25,8 @@ private:
 	vector<Action>			findExclusions();
 	void					arrangeMapping(bool rows);
 	char					getCharByDirection(Action a);
-	inline int				numOfSteps() { return m_actionVector.size(); }
-	Coordinate				getCoordinateByAction(Coordinate & currLoc, const Action & a);
+	inline int				numOfSteps() { return (int)m_actionVector.size(); }
+	Coordinate				getCoordinateByAction(Coordinate loc, const Action & a);
 
 public:
 	Player();

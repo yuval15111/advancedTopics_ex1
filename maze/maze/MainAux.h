@@ -25,6 +25,7 @@
 #define LEGALSTEP 0
 #define HITWALL 1
 #define HITBOOKMARK 2
+#define NUM_OF_STEPS 4
 
 enum class ErrorType {
 	MissingInput, MissingOutput, BadInputAddress, BadOutputAddress,

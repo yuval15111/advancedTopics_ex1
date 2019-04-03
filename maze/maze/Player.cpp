@@ -19,11 +19,11 @@ void Player::updateLocation(bool undo) {
 		break;
 	case Action::DOWN:
 		if (m_rowsNum == MAX_INT) m_location.first--;
-		else m_location.first == 0 ? m_rowsNum - 1 : m_location.first - 1;
+		else m_location.first = (m_location.first == 0 ? (m_rowsNum - 1) : (m_location.first - 1));
 		break;
 	case Action::LEFT:
 		if (m_colsNum == MAX_INT) m_location.second--;
-		else m_location.second == 0 ? m_colsNum - 1 : m_location.second - 1;
+		else m_location.second = (m_location.second == 0 ? (m_colsNum - 1) : (m_location.second - 1));
 		break;
 	case Action::RIGHT:
 		m_location.second = (m_location.second + 1) % m_colsNum;
@@ -35,39 +35,39 @@ void Player::updateLocation(bool undo) {
 
 /*	params: Coordinate and action
 	return: New coordinate according to movement */
-Coordinate Player::getCoordinateByAction(Coordinate & currLoc, const Action & a) {
-	Coordinate newLoc;
+Coordinate Player::getCoordinateByAction(Coordinate loc, const Action & a) {
 	switch (a) {
 	case Action::UP:
-		newLoc.first = (currLoc.first + 1) % m_rowsNum;
+		loc.first = (loc.first + 1) % m_rowsNum;
 		break;
 	case Action::DOWN:
-		if (m_rowsNum == MAX_INT) newLoc.first--;
-		else newLoc.first = currLoc.first == 0 ? m_rowsNum - 1 : currLoc.first - 1;
+		if (m_rowsNum == MAX_INT) loc.first--;
+		else loc.first = (loc.first == 0 ? (m_rowsNum - 1) : (loc.first - 1));
 		break;
 	case Action::LEFT:
-		if (m_colsNum == MAX_INT) newLoc.second--;
-		else newLoc.second = currLoc.second == 0 ? m_colsNum - 1 : currLoc.second - 1;
+		if (m_colsNum == MAX_INT) loc.second--;
+		else loc.second = (loc.second == 0 ? (m_colsNum - 1) : (loc.second - 1));
 		break;
 	case Action::RIGHT:
-		newLoc.second = (currLoc.second + 1) % m_colsNum;
+		loc.second = (loc.second + 1) % m_colsNum;
 		break;
 	default: // bookmark
-		newLoc.first = currLoc.first >= 0 ? currLoc.first % m_rowsNum : (m_rowsNum + (newLoc.first % m_rowsNum)) % m_rowsNum;
-		newLoc.second = currLoc.second >= 0 ? currLoc.second % m_colsNum : (m_colsNum + (newLoc.second % m_colsNum)) % m_colsNum;
+		loc.first = (loc.first >= 0 ? (loc.first % m_rowsNum) : ((m_rowsNum + (loc.first % m_rowsNum)) % m_rowsNum));
+		loc.second = (loc.second >= 0 ? (loc.second % m_colsNum) : ((m_colsNum + (loc.second % m_colsNum)) % m_colsNum));
 	}
-	return newLoc;
+	return loc;
 }
 
-void Player::updateMapping(const Coordinate loc, char c) {
+void Player::updateMapping(Coordinate loc, char c) {
 	m_mazeMapping[loc] = c;
 }
 
 Action Player::move() {
 	generateAction(findExclusions());
 	m_actionVector.push_back(m_action);
+	if (m_action == Action::BOOKMARK) return m_action; // no updates needed in player's other fields
 	updateLocation();
-	updateMapping(m_location, SPACE_CHAR);
+	if (m_mazeMapping.find(m_location) == m_mazeMapping.end()) updateMapping(m_location, SPACE_CHAR);
 	return m_action;
 }
 
@@ -96,20 +96,19 @@ void Player::hitBookmark()
 }
 
 void Player::generateAction(vector<Action> exclusions) {
-	if (m_actionVector.size() % STEPS_NUM_TO_BOOKMARK == 0) {
+	if (m_actionVector.size() % STEPS_NUM_TO_BOOKMARK == 0) {	// TIME FOR A BOOKMARK
 		m_action = Action::BOOKMARK;
 		m_bookmark = m_location;
-		return;
 	}
-
-	srand((unsigned int)time(0));
-	// generates an action until it finds an action not in exclusions
-	do {
-		m_action = Action(rand() % 4);
-	} while (inVector(exclusions));
-	
-	if (numOfSteps() != 0 && m_action == m_actionVector[numOfSteps() - 1]) m_currActionCounter++;
-	else m_currActionCounter = 1;
+	else {														// STEP ACTION
+		srand((unsigned int)time(0));
+		// generates a step action until it finds an action not in exclusions
+		do {
+			m_action = Action(rand() % NUM_OF_STEPS);
+		} while (inVector(exclusions));
+	}
+	if (numOfSteps() != 0 && m_action == m_actionVector[numOfSteps() - 1]) m_currActionCounter++; // updates the current action counter
+	else if (m_action != Action::BOOKMARK) m_currActionCounter = 1;
 }
 
 bool Player::inVector(vector<Action> exclusions) {
@@ -130,7 +129,7 @@ vector<Action> Player::findExclusions()
 	char left = getCharByDirection(Action::LEFT);
 	char right = getCharByDirection(Action::RIGHT);
 	
-	vector <char> directions = { up,down,right,left };
+	vector <char> directions = { up, down, right, left };
 	vector <int> visit = { 0,0,0,0 };
 	int space = 0;
 	int wall = 0;
@@ -140,10 +139,9 @@ vector<Action> Player::findExclusions()
 		exclusions.push_back(m_action);
 	}
 
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < NUM_OF_STEPS; ++i) {
 		if (directions[i] == WALL_CHAR) { 
 			exclusions.push_back(static_cast<Action>(i));
-
 			// In this location we hit a wall
 			visit[i] = 2;
 			wall++;
@@ -157,11 +155,11 @@ vector<Action> Player::findExclusions()
 	}
 
 	// If we visited in all the directions
-	if ((wall + space) == 4 || space == 4) return exclusions;
+	if ((wall + space) == NUM_OF_STEPS) return exclusions;
 
-	// If we doesnt visited in all the directions we will push the locations that we visit
+	// If we didn't visit all the directions we will push the locations that we visit
 	else {
-		for (int j = 0; j < 4; ++j) { if (visit[j] == 1) exclusions.push_back(static_cast<Action>(j)); };
+		for (int j = 0; j < NUM_OF_STEPS; ++j) { if (visit[j] == 1) exclusions.push_back(static_cast<Action>(j)); };
 	}
 
 	return exclusions;
@@ -175,9 +173,6 @@ void Player::arrangeMapping(bool rows)
 		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
 			char& c = m_mazeMapping[(*it).first];
 			Coordinate newLocation = (*it).first;
-			if (newLocation.first % 20 == 0) {
-				int a = 2;
-			}
 			if (newLocation.first < 0) newLocation.first = (m_rowsNum + newLocation.first % m_rowsNum) % m_rowsNum;
 			else newLocation.first %= m_rowsNum;
 			newMapping[newLocation] = c;
@@ -187,9 +182,6 @@ void Player::arrangeMapping(bool rows)
 		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
 			char& c = m_mazeMapping[(*it).first];
 			Coordinate newLocation = (*it).first;
-			if (newLocation.second % 20 == 0) {
-				int a = 2;
-			}
 			if (newLocation.second < 0) newLocation.second = (m_colsNum + newLocation.second % m_colsNum) % m_colsNum;
 			else newLocation.second %= m_colsNum;
 			newMapping[newLocation] = c;
