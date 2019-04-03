@@ -25,7 +25,6 @@ public:
 	void					parseInput();
 	inline bool				noErrors() { return m_errors.noErrors; }
 	void					pushActionsToOutputFile(vector<char> actions);
-	void					play();
 };
 
 #endif

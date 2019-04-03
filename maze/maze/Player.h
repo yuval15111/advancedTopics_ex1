@@ -16,7 +16,7 @@ private:
 	Action					m_action;
 
 	void					updateLocation(const bool undo = false);
-	void					updatePath(const bool undo = false); // we will call from move
+	void					updatePath(const bool undo = false);
 	void					updateMapping(const Coordinate loc, char c);
 	void					generateAction(vector<Action> exclusions);
 	bool					inVector(vector<Action> exclusions);
@@ -24,7 +24,6 @@ private:
 
 public:
 	Player();
-	//~Player();
 	Action					move();
 	void					hitWall();
 	void					hitBookmark();

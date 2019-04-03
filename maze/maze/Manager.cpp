@@ -5,13 +5,14 @@ Manager::~Manager()
 	delete m_player;
 }
 
+/* main function of manager, where the game flow is */
 vector<char> Manager::play() {
 	vector<char> actionsLst;
 	m_player = new Player();									// PLAYER: LET'S GO!
 	for (size_t i = 1; i <= m_maxSteps; ++i) {
 		Action action = m_player->move();								// PLAYER: THIS IS MY MOVE!
 		actionsLst.push_back(getActionChar(action));
-		if (action == Action::BOOKMARK)	bookmark();
+		if (action == Action::BOOKMARK)	updateBookmark();
 		else {
 			execute(action);										// MANAGER: OK, LET ME WRITE THAT DOWN...
 			if (playerHitsEndChar()) {

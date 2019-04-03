@@ -102,6 +102,7 @@ bool Player::inVector(vector<Action> exclusions) {
 	return false;
 }
 
+/*	return: vector of actions which none of them won't be chosen as the next action */
 vector<Action> Player::findExclusions()
 {
 	vector<Action> exclusions;

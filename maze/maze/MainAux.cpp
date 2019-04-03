@@ -1,5 +1,6 @@
 #include "MainAux.h"
 
+/* return: the opposite direction of Action a */
 Action operator!(const Action& a) {
 	switch (a) {
 	case Action::UP:
@@ -15,6 +16,8 @@ Action operator!(const Action& a) {
 	}
 }
 
+/*	params: Coordinate and action
+	return: New coordinate according to movement */
 Coordinate operator+(Coordinate a, const Action & b) {
 	switch (b) {
 	case Action::UP:

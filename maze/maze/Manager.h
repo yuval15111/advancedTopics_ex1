@@ -23,7 +23,7 @@ public:
 			m_endLocation(endLocation),	m_bookmark(0, 0) {};
 	~Manager();
 
-	inline void				bookmark() { m_bookmark = m_playerLocation; }
+	inline void				updateBookmark() { m_bookmark = m_playerLocation; }
 	void					execute(Action a, const bool undo = false);
 	inline char				getCoordValue() { return m_board[m_playerLocation.first][m_playerLocation.second]; }
 	inline bool				playerHitsEndChar() { return getCoordValue() == END_CHAR; }

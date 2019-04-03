@@ -47,6 +47,7 @@ typedef void(*Func) (const string & str);
 Action operator!(const Action& a);
 Coordinate operator+(Coordinate a, const Action & b);
 
+// Event messages
 void printWinMessage(const size_t numOfSteps);
 void printLostMessage(const size_t numOfSteps);
 void printMissingInputError(const string & str);

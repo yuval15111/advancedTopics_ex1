@@ -7,6 +7,8 @@ FileHandler::~FileHandler()
 	m_fout.close();
 }
 
+/*	In the constructor we initialize ifstream m_fin and ofstream m_fout.
+	We also check here validity of the program arguments. */
 FileHandler::FileHandler(int argc, char * argv[]) {
 	cout << "Before openning fin" << endl;
 	m_fin.open(argv[1]);
@@ -33,6 +35,8 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 	checkErrors();
 }
 
+/*	This function checks if there are errors.
+	Returns: true iff there were errors. */
 bool FileHandler::checkErrors() {
 	if (m_errors.list.size() == 0) return true;
 	m_errors.noErrors = false;
@@ -45,6 +49,7 @@ bool FileHandler::checkErrors() {
 	return false;
 }
 
+/* This function parses the input file and creates the manager object. */
 void FileHandler::parseInput() {
 	string line;
 	// Manager future fields
@@ -90,6 +95,9 @@ size_t FileHandler::getIntValue(const string & input, const ErrorType error, str
 	return -1;
 }
 
+/*	params: rows, col - parsed from maze file; references to playerLocation and endLocation that will be filled in this function;
+			refernce to line string which we fill with lines from the input and parse the file with.
+	return: A maze board object (two-dimensional character vector) */
 MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate & playerLocation, Coordinate & endLocation, string & line) {
 	MazeBoard board;
 	bool seenPlayerChar = false, seenEndChar = false;
@@ -118,6 +126,9 @@ MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate
 	return board;
 }
 
+/*	A helper function for getBoard().
+	Params: char c, location reference, (i, j) new coordinate indices, other helping parameters.
+	The function updates the location coordinate by (i, j) values or pushes errors to the Errors vector if needed. */
 void FileHandler::handleSpecialChar(const char c, Coordinate & location, const size_t i, const size_t j, bool & seenChar, string & line, const ErrorType e) {
 	if (!seenChar) {
 		updateCoordinate(location, i, j);
@@ -129,6 +140,9 @@ void FileHandler::handleSpecialChar(const char c, Coordinate & location, const s
 	}
 }
 
+/*	A helper function for getBoard().
+	Params: invalid char c, (i, j) error indices.
+	The function pushes invalid char error to Error vector. */
 void FileHandler::handleInvalidChar(const char c, const size_t i, const size_t j) {
 	string str = "000";
 	str[0] = c;
@@ -137,14 +151,9 @@ void FileHandler::handleInvalidChar(const char c, const size_t i, const size_t j
 	pushError(ErrorType::WrongChar, str);
 }
 
+/*	params: vector of game actions.
+	This function pushes the actions vector into the output file. */
 void FileHandler::pushActionsToOutputFile(vector<char> actions) {
 	for(const char & c : actions)
 		m_fout << c << endl;
 }
-
-void FileHandler::play()
-{
-
-}
-
-
