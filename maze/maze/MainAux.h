@@ -9,6 +9,7 @@
 #include <map>
 #include <utility>
 #include <fstream>
+#include <sys/stat.h>
 
 #define MAX_INT 2147483647
 
@@ -82,6 +83,7 @@ struct Errors {
 	bool noErrors = true;
 };
 
+bool fileExists(const char* path);
 char getActionChar(const Action& a);
 void updateCoordinate(Coordinate & c, const size_t i, const size_t j);
 

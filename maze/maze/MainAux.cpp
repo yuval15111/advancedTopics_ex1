@@ -116,6 +116,12 @@ void printWrongCharError(const string & str)
 		cout << "Wrong character in maze: " << str[0] << " in row " << (int)str[1] << ", col " << (int)str[2] << endl;
 }
 
+/* return true iff the file in path exists */
+bool fileExists(const char* path) {
+	struct stat buf;
+	return (stat(path, &buf) == 0);
+}
+
 char getActionChar(const Action& a) {
 	switch (a) {
 	case Action::UP:

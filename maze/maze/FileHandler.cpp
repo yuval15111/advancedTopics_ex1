@@ -27,7 +27,7 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 		pushError(ErrorType::BadInputAddress, argv[1]);
 		cout << "end3" << endl;
 	}
-	else if (!m_fout.good()) {
+	else if (!m_fout.good() || fileExists(argv[2])) {
 		pushError(ErrorType::BadOutputAddress, argv[2]);
 		cout << "end4" << endl;
 	}
