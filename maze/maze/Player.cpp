@@ -1,13 +1,10 @@
 #include "Player.h"
 #include <time.h>
 
-#define ABS(x,y) x > y ? x - y : y - x
 
 Player::Player() { 
-	m_numOfSteps = 1; // first step in our implementation will be BOOKMARK, so to simplify the code we begin counting steps from 1
 	m_bookmark = make_pair(0, 0); // first bookmark in starting point
 	m_location = make_pair(0, 0);
-	updatePath();
 	updateMapping(m_location, SPACE_CHAR);
 	m_action = Action::BOOKMARK;
 }
@@ -54,26 +51,16 @@ void Player::updateLocation(bool undo) {
 	}
 }*/
 
-void Player::updatePath(const bool undo) {
-	if (!undo) {
-		Coordinate copy = make_pair(m_location.first, m_location.second);
-		m_path.push_back(copy);
-	}
-	else {
-		m_path.pop_back();
-	}
-}
 
 void Player::updateMapping(const Coordinate loc, char c) {
 	m_mazeMapping[loc] = c;
 }
 
 Action Player::move() {
-	m_numOfSteps++;
 	generateAction(findExclusions());
+	m_actionVector.push_back(m_action);
 	updateLocation();
 	updateMapping(m_location, SPACE_CHAR);
-	updatePath();
 	return m_action;
 }
 
@@ -90,21 +77,29 @@ void Player::hitBookmark()
 	else {
 		if (m_bookmark.first == m_location.first) { // Defines col dimention
 			m_colsNum = ABS(m_bookmark.second, m_location.second);
-			arrangeMapping(true);
+			arrangeMapping(false);
 		} 
 		else if (m_bookmark.second == m_location.second) {
 			m_rowsNum = ABS(m_bookmark.first, m_location.first);
-			arrangeMapping(false);
+			arrangeMapping(true);
 		}
 	}
 }
 
 void Player::generateAction(vector<Action> exclusions) {
+	if (m_actionVector.size() % STEPS_NUM_TO_BOOKMARK == 0) {
+		m_action = Action::BOOKMARK;
+		return;
+	}
+
 	srand((unsigned int)time(0));
 	// generates an action until it finds an action not in exclusions
 	do {
 		m_action = Action(rand() % 4);
 	} while (inVector(exclusions));
+	
+	if (numOfSteps() != 0 && m_action == m_actionVector[numOfSteps() - 1]) m_currActionCounter++;
+	else m_currActionCounter = 1;
 }
 
 bool Player::inVector(vector<Action> exclusions) {
@@ -119,15 +114,21 @@ bool Player::inVector(vector<Action> exclusions) {
 vector<Action> Player::findExclusions()
 {
 	vector<Action> exclusions;
-	char up = m_mazeMapping[m_location + Action::UP];
-	char down = m_mazeMapping[m_location + Action::DOWN];
-	char left = m_mazeMapping[m_location + Action::LEFT];
-	char right = m_mazeMapping[m_location + Action::RIGHT];
+
+	char up = getCharByDirection(Action::UP);
+	char down = getCharByDirection(Action::DOWN);
+	char left = getCharByDirection(Action::LEFT);
+	char right = getCharByDirection(Action::RIGHT);
 	
 	vector <char> directions = { up,down,right,left };
 	vector <int> visit = { 0,0,0,0 };
 	int space = 0;
 	int wall = 0;
+
+	// We won't allow more than MAX_SAME_ACTION_NUM steps of the same action.
+	if (m_currActionCounter == MAX_SAME_ACTION_NUM) {
+		exclusions.push_back(m_action);
+	}
 
 	for (int i = 0; i < 4; ++i) {
 		if (directions[i] == WALL_CHAR) { 
@@ -173,12 +174,20 @@ void Player::arrangeMapping(bool rows)
 		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
 			char& c = m_mazeMapping[(*it).first];
 			Coordinate newLocation = (*it).first;
-			if (newLocation.first < 0) newLocation.second = m_rowsNum + newLocation.second % m_rowsNum;
-			else newLocation.second %= m_rowsNum;
+			if (newLocation.second < 0) newLocation.second = m_colsNum + newLocation.second % m_colsNum;
+			else newLocation.second %= m_colsNum;
 			newMapping[newLocation] = c;
 		}
 	}
 	m_mazeMapping.clear();
 	m_mazeMapping = newMapping;
+}
+
+char Player::getCharByDirection(Action a)
+{
+	Coordinate key = m_location + a;
+	if (m_mazeMapping.find(key) != m_mazeMapping.end())
+		return m_mazeMapping[key];
+	return '0';
 }
 

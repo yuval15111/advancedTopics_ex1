@@ -49,7 +49,7 @@ void FileHandler::parseInput() {
 	// Manager future fields
 	MazeBoard board; 
 	string name;
-	size_t maxSteps, rowsNum, colsNum;
+	int maxSteps, rowsNum, colsNum;
 	Coordinate playerLocation = make_pair(0, 0), endLocation = make_pair(0, 0);
 
 	// Parsing begins here
@@ -73,8 +73,9 @@ string FileHandler::getName(string & line) {
 	return nullptr;
 }
 
-size_t FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
-	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*");
+int FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
+	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*((.|\\r)*)");
+	
 	const regex numReg("[1-9][0-9]*");
 	smatch match;
 	if (getline(m_fin, line)) {
@@ -92,13 +93,13 @@ size_t FileHandler::getIntValue(const string & input, const ErrorType error, str
 /*	params: rows, col - parsed from maze file; references to playerLocation and endLocation that will be filled in this function;
 			refernce to line string which we fill with lines from the input and parse the file with.
 	return: A maze board object (two-dimensional character vector) */
-MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate & playerLocation, Coordinate & endLocation, string & line) {
+MazeBoard FileHandler::getBoard(const int rows, const int cols, Coordinate & playerLocation, Coordinate & endLocation, string & line) {
 	MazeBoard board;
 	bool seenPlayerChar = false, seenEndChar = false;
-	for (size_t i = 0; i < rows; i++) {
+	for (int i = 0; i < rows; i++) {
 		MazeRow row;
 		if (getline(m_fin, line)) {
-			for (size_t j = 0; j < line.length(); j++) {
+			for (int j = 0; j < (int)line.length(); j++) {
 				if (line[j] == PLAYER_CHAR)
 					handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
 				else if (line[j] == END_CHAR)
@@ -107,11 +108,11 @@ MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate
 					handleInvalidChar(line[j], i, j);
 				row.push_back(line[j]);
 			}
-			for (size_t j = line.length(); j < cols; j++)
+			for (int j = (int)line.length(); j < cols; j++)
 				row.push_back(SPACE_CHAR);
 		}
 		else
-			for (size_t j = 0; j < cols; j++)
+			for (int j = 0; j < cols; j++)
 				row.push_back(SPACE_CHAR);
 		board.push_back(row);
 	}
@@ -123,7 +124,7 @@ MazeBoard FileHandler::getBoard(const size_t rows, const size_t cols, Coordinate
 /*	A helper function for getBoard().
 	Params: char c, location reference, (i, j) new coordinate indices, other helping parameters.
 	The function updates the location coordinate by (i, j) values or pushes errors to the Errors vector if needed. */
-void FileHandler::handleSpecialChar(const char c, Coordinate & location, const size_t i, const size_t j, bool & seenChar, string & line, const ErrorType e) {
+void FileHandler::handleSpecialChar(const char c, Coordinate & location, const int i, const int j, bool & seenChar, string & line, const ErrorType e) {
 	if (!seenChar) {
 		updateCoordinate(location, i, j);
 		seenChar = true;
@@ -137,7 +138,7 @@ void FileHandler::handleSpecialChar(const char c, Coordinate & location, const s
 /*	A helper function for getBoard().
 	Params: invalid char c, (i, j) error indices.
 	The function pushes invalid char error to Error vector. */
-void FileHandler::handleInvalidChar(const char c, const size_t i, const size_t j) {
+void FileHandler::handleInvalidChar(const char c, const int i, const int j) {
 	string str = "000";
 	str[0] = c;
 	str[1] = (char)i;

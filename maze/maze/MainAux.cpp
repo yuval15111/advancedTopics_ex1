@@ -38,11 +38,11 @@ Coordinate operator+(Coordinate a, const Action & b) {
 	return a;
 }
 
-void printWinMessage(const size_t numOfSteps) {
+void printWinMessage(const int numOfSteps) {
 	cout << "Succeeded in " << numOfSteps << " steps" << endl; 
 }
 
-void printLostMessage(const size_t numOfSteps) {
+void printLostMessage(const int numOfSteps) {
 	cout << "Failed to solve maze in " << numOfSteps << " steps" << endl;
 }
 
@@ -137,7 +137,7 @@ char getActionChar(const Action& a) {
 	}
 }
 
-void updateCoordinate(Coordinate & c, const size_t i, const size_t j) {
+void updateCoordinate(Coordinate & c, const int i, const int j) {
 	c.first = i;
 	c.second = j;
 }

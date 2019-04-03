@@ -8,7 +8,7 @@ public:
 	
 private:
 	string 					m_name;
-	size_t 					m_maxSteps, m_rowsNum, m_colsNum;
+	int 					m_maxSteps, m_rowsNum, m_colsNum;
 	MazeBoard 				m_board;
 	Coordinate 				m_playerLocation;
 	Coordinate				m_endLocation;
@@ -16,7 +16,7 @@ private:
 	Player *				m_player = nullptr;
 
 public:
-	Manager(string name, size_t maxSteps, size_t rowsNum, size_t colsNum,
+	Manager(string name, int maxSteps, int rowsNum, int colsNum,
 			MazeBoard board, Coordinate playerLocation, Coordinate endLocation) :
 			m_name(name), m_maxSteps(maxSteps), m_rowsNum(rowsNum),
 			m_colsNum(colsNum),	m_board(board), m_playerLocation(playerLocation),
@@ -29,7 +29,7 @@ public:
 	inline bool				playerHitsEndChar() { return getCoordValue() == END_CHAR; }
 	inline bool				playerHitsWallChar() { return getCoordValue() == WALL_CHAR; }
 	inline bool				playerHitsBookmark() { return m_playerLocation == m_bookmark; }
-	inline size_t			getMaxSteps() { return m_maxSteps; }
+	inline int			getMaxSteps() { return m_maxSteps; }
 	void					printBoard();
 	vector<char>			play();
 };

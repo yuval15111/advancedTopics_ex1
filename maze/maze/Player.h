@@ -3,27 +3,31 @@
 
 #include "MainAux.h"
 
+#define STEPS_NUM_TO_BOOKMARK 25
+#define MAX_SAME_ACTION_NUM 30
+
 class Player {
 	
 private:
-	size_t					m_numOfSteps = 0;
-	size_t					m_rowsNum = MAX_INT;
-	size_t					m_colsNum = MAX_INT;
+	int					m_rowsNum = MAX_INT;
+	int					m_colsNum = MAX_INT;
 	Coordinate				m_bookmark;
-	vector <Coordinate>		m_path;
 	Coordinate				m_location;
 	map <Coordinate,char>	m_mazeMapping;
 	Action					m_action;
+	int						m_currActionCounter = 0;
 
 	void					updateLocation(const bool undo = false);
-	void					updatePath(const bool undo = false);
 	void					updateMapping(const Coordinate loc, char c);
 	void					generateAction(vector<Action> exclusions);
 	bool					inVector(vector<Action> exclusions);
 	vector<Action>			findExclusions();
 	void					arrangeMapping(bool rows);
+	char					getCharByDirection(Action a);
+	inline int				numOfSteps() { return m_actionVector.size(); }
 
 public:
+	vector <Action>			m_actionVector;
 	Player();
 	Action					move();
 	void					hitWall();

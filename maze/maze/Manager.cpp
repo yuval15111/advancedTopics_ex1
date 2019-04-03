@@ -7,9 +7,9 @@ Manager::~Manager()
 
 /* main function of manager, where the game flow is */
 vector<char> Manager::play() {
-	vector<char> actionsLst = { 'B' };
+	vector<char> actionsLst;
 	m_player = new Player();									// PLAYER: LET'S GO!
-	for (size_t i = 1; i <= m_maxSteps; ++i) {
+	for (int i = 1; i <= m_maxSteps; ++i) {
 		Action action = m_player->move();								// PLAYER: THIS IS MY MOVE!
 		actionsLst.push_back(getActionChar(action));
 		if (action == Action::BOOKMARK)	updateBookmark();
@@ -37,8 +37,8 @@ vector<char> Manager::play() {
 
 void Manager::printBoard()
 {
-	for (size_t i = 0; i < m_rowsNum; i++) {
-		for (size_t j = 0; j < m_colsNum; j++) {
+	for (int i = 0; i < m_rowsNum; i++) {
+		for (int j = 0; j < m_colsNum; j++) {
 			if (m_playerLocation.first != i || m_playerLocation.second != j) {
 				cout << m_board[i][j];
 			}

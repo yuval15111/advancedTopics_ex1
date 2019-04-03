@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 
 #define MAX_INT 2147483647
+#define ABS(x,y) x > y ? x - y : y - x
 
 #define MAXSTEPS "MaxSteps"
 #define ROWS "Rows"
@@ -40,7 +41,7 @@ enum class Action {
 using namespace std;
 using MazeRow = vector<char>;
 using MazeBoard = vector<MazeRow>;
-using Coordinate = pair<size_t, size_t>;
+using Coordinate = pair<int, int>;
 using Pair = pair<ErrorType, string>;
 using ErrorList = vector<Pair>;
 typedef void(*Func) (const string & str);
@@ -49,8 +50,8 @@ Action operator!(const Action& a);
 Coordinate operator+(Coordinate a, const Action & b);
 
 // Event messages
-void printWinMessage(const size_t numOfSteps);
-void printLostMessage(const size_t numOfSteps);
+void printWinMessage(const int numOfSteps);
+void printLostMessage(const int numOfSteps);
 void printMissingInputError(const string & str);
 void printMissingOutputError(const string & str);
 void printBadInputAddressError(const string & str);
@@ -85,6 +86,6 @@ struct Errors {
 
 bool fileExists(const char* path);
 char getActionChar(const Action& a);
-void updateCoordinate(Coordinate & c, const size_t i, const size_t j);
+void updateCoordinate(Coordinate & c, const int i, const int j);
 
 #endif
