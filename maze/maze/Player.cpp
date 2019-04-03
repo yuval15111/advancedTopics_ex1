@@ -9,48 +9,55 @@ Player::Player() {
 	m_action = Action::BOOKMARK;
 }
 
+
+
 void Player::updateLocation(bool undo) {
 	m_action = undo ? !m_action : m_action;
 	switch (m_action) {
 	case Action::UP:
-		m_location.first++;
+		m_location.first = (m_location.first + 1) % m_rowsNum;
 		break;
 	case Action::DOWN:
-		m_location.first--;
+		if (m_rowsNum == MAX_INT) m_location.first--;
+		else m_location.first == 0 ? m_rowsNum - 1 : m_location.first - 1;
 		break;
 	case Action::LEFT:
-		m_location.second--;
+		if (m_colsNum == MAX_INT) m_location.second--;
+		else m_location.second == 0 ? m_colsNum - 1 : m_location.second - 1;
 		break;
 	case Action::RIGHT:
-		m_location.second++;
+		m_location.second = (m_location.second + 1) % m_colsNum;
 		break;
 	default:
 		break;
 	}
 }
-// TODO: previous implementation
-/*{
-	a = undo ? !a : a;
+
+/*	params: Coordinate and action
+	return: New coordinate according to movement */
+Coordinate Player::getCoordinateByAction(Coordinate & currLoc, const Action & a) {
+	Coordinate newLoc;
 	switch (a) {
 	case Action::UP:
-		m_currentLocation.row += m_rowsNum - 1;
-		m_currentLocation.row %= m_rowsNum;
+		newLoc.first = (currLoc.first + 1) % m_rowsNum;
 		break;
 	case Action::DOWN:
-		m_currentLocation.row++;
-		m_currentLocation.row %= m_rowsNum;
+		if (m_rowsNum == MAX_INT) newLoc.first--;
+		else newLoc.first = currLoc.first == 0 ? m_rowsNum - 1 : currLoc.first - 1;
 		break;
 	case Action::LEFT:
-		m_currentLocation.col += m_colsNum - 1;
-		m_currentLocation.col %= m_colsNum;
+		if (m_colsNum == MAX_INT) newLoc.second--;
+		else newLoc.second = currLoc.second == 0 ? m_colsNum - 1 : currLoc.second - 1;
 		break;
 	case Action::RIGHT:
-		m_currentLocation.col++;
-		m_currentLocation.col %= m_colsNum;
+		newLoc.second = (currLoc.second + 1) % m_colsNum;
 		break;
+	default: // bookmark
+		newLoc.first = currLoc.first >= 0 ? currLoc.first % m_rowsNum : (m_rowsNum + (newLoc.first % m_rowsNum)) % m_rowsNum;
+		newLoc.second = currLoc.second >= 0 ? currLoc.second % m_colsNum : (m_colsNum + (newLoc.second % m_colsNum)) % m_colsNum;
 	}
-}*/
-
+	return newLoc;
+}
 
 void Player::updateMapping(const Coordinate loc, char c) {
 	m_mazeMapping[loc] = c;
@@ -83,12 +90,15 @@ void Player::hitBookmark()
 			m_rowsNum = ABS(m_bookmark.first, m_location.first);
 			arrangeMapping(true);
 		}
+		m_location = getCoordinateByAction(m_location, Action::BOOKMARK);
+		m_bookmark = getCoordinateByAction(m_bookmark, Action::BOOKMARK);
 	}
 }
 
 void Player::generateAction(vector<Action> exclusions) {
 	if (m_actionVector.size() % STEPS_NUM_TO_BOOKMARK == 0) {
 		m_action = Action::BOOKMARK;
+		m_bookmark = m_location;
 		return;
 	}
 
@@ -165,7 +175,10 @@ void Player::arrangeMapping(bool rows)
 		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
 			char& c = m_mazeMapping[(*it).first];
 			Coordinate newLocation = (*it).first;
-			if (newLocation.first < 0) newLocation.first = m_rowsNum + newLocation.first % m_rowsNum;
+			if (newLocation.first % 20 == 0) {
+				int a = 2;
+			}
+			if (newLocation.first < 0) newLocation.first = (m_rowsNum + newLocation.first % m_rowsNum) % m_rowsNum;
 			else newLocation.first %= m_rowsNum;
 			newMapping[newLocation] = c;
 		}
@@ -174,7 +187,10 @@ void Player::arrangeMapping(bool rows)
 		for (map<Coordinate, char>::iterator it = m_mazeMapping.begin(); it != m_mazeMapping.end(); ++it) {
 			char& c = m_mazeMapping[(*it).first];
 			Coordinate newLocation = (*it).first;
-			if (newLocation.second < 0) newLocation.second = m_colsNum + newLocation.second % m_colsNum;
+			if (newLocation.second % 20 == 0) {
+				int a = 2;
+			}
+			if (newLocation.second < 0) newLocation.second = (m_colsNum + newLocation.second % m_colsNum) % m_colsNum;
 			else newLocation.second %= m_colsNum;
 			newMapping[newLocation] = c;
 		}
@@ -185,7 +201,7 @@ void Player::arrangeMapping(bool rows)
 
 char Player::getCharByDirection(Action a)
 {
-	Coordinate key = m_location + a;
+	Coordinate key = getCoordinateByAction(m_location, a);
 	if (m_mazeMapping.find(key) != m_mazeMapping.end())
 		return m_mazeMapping[key];
 	return '0';

@@ -16,27 +16,6 @@ Action operator!(const Action& a) {
 	}
 }
 
-/*	params: Coordinate and action
-	return: New coordinate according to movement */
-Coordinate operator+(Coordinate a, const Action & b) {
-	switch (b) {
-	case Action::UP:
-		a.first++;
-		break;
-	case Action::DOWN:
-		a.first--;
-		break;
-	case Action::LEFT:
-		a.second--;
-		break;
-	case Action::RIGHT:
-		a.second++;
-		break;
-	default:
-		break;
-	}
-	return a;
-}
 
 void printWinMessage(const int numOfSteps) {
 	cout << "Succeeded in " << numOfSteps << " steps" << endl; 

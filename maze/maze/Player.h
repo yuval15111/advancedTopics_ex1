@@ -12,6 +12,7 @@ private:
 	int					m_rowsNum = MAX_INT;
 	int					m_colsNum = MAX_INT;
 	Coordinate				m_bookmark;
+	vector <Action>			m_actionVector;
 	Coordinate				m_location;
 	map <Coordinate,char>	m_mazeMapping;
 	Action					m_action;
@@ -25,9 +26,9 @@ private:
 	void					arrangeMapping(bool rows);
 	char					getCharByDirection(Action a);
 	inline int				numOfSteps() { return m_actionVector.size(); }
+	Coordinate				getCoordinateByAction(Coordinate & currLoc, const Action & a);
 
 public:
-	vector <Action>			m_actionVector;
 	Player();
 	Action					move();
 	void					hitWall();

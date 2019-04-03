@@ -13,7 +13,7 @@ private:
 	bool					checkErrors();
 	inline void				pushError(ErrorType type, const string & str) { m_errors.list.push_back(Pair(type, str)); }
 	string					getName(string & line);
-	int					getIntValue(const string & input, const ErrorType error, string & line);
+	int						getIntValue(const string & input, const ErrorType error, string & line);
 	MazeBoard				getBoard(const int rows, const int cols, Coordinate & playerLocation, Coordinate & endLocation, string & line);
 	void					handleSpecialChar(const char c, Coordinate & location, const int i, const int j, bool & seenChar, string & line, const ErrorType e);
 	void					handleInvalidChar(const char c, const int i, const int j);

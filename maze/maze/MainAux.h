@@ -47,7 +47,6 @@ using ErrorList = vector<Pair>;
 typedef void(*Func) (const string & str);
 
 Action operator!(const Action& a);
-Coordinate operator+(Coordinate a, const Action & b);
 
 // Event messages
 void printWinMessage(const int numOfSteps);
