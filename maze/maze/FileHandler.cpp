@@ -15,11 +15,13 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 		pushError(ErrorType::MissingInput, string());								// No arguments at all - shouldn't parse
 		break;
 	case 2:
+		m_errors.no_IO_Errors = false;
 		pushError(ErrorType::MissingOutput, string());								// No output path argument: may parse maze anyway
 	default:
 		if (!fileExists(argv[1])) {
 			pushError(ErrorType::BadInputAddress, argv[1]);							// Bad maze path or file does not exist
-			allowParsing(true);
+			
+			allowParsing(false); // CHECKKKKKK was true
 			break;
 		}
 		m_fin.open(argv[1]);
@@ -29,6 +31,7 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 				m_errors.no_IO_Errors = false;
 			}
 			else m_fout.open(argv[2]);												// If reaches here, valid output path argument
+		allowParsing(true);
 	}
 	checkErrors(nullptr);
 }
@@ -37,7 +40,9 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 void FileHandler::checkErrors(void(*titleFunc)) {
 	if (m_errors.list.size() == 0) return;
 	if (titleFunc != nullptr) { // parsing errors
-		titleFunc;
+		FuncNoArgs f = (FuncNoArgs)titleFunc;
+		f();
+
 		m_errors.no_parsing_Errors = false;
 	}
 	for (ErrorList::iterator it = m_errors.list.begin(); it != m_errors.list.end(); ++it) {
@@ -61,7 +66,7 @@ void FileHandler::parseInput() {
 		Coordinate playerLocation, endLocation;
 		MazeBoard board = getBoard(rowsNum, colsNum, playerLocation, endLocation, line);
 		checkErrors(printMazeErrorTitle);
-		if (m_errors.no_parsing_Errors && m_errors.noInputErrors)									// No errors, maze file is valid - creates a Manager object
+		if (m_errors.no_parsing_Errors && m_errors.no_IO_Errors)									// No errors, maze file is valid - creates a Manager object
 			m_manager = new Manager(name, maxSteps, rowsNum, colsNum,
 									board, playerLocation, endLocation);
 	}
@@ -75,7 +80,7 @@ string FileHandler::getName(string & line) {
 }
 
 int FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
-	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*((.|\\r)*)");
+	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*[^a-zA-Z]\\s*((.|\\r)*)");
 	
 	const regex numReg("[1-9][0-9]*");
 	smatch match;

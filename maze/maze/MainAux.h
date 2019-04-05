@@ -46,6 +46,7 @@ using Coordinate = pair<int, int>;
 using Pair = pair<ErrorType, string>;
 using ErrorList = vector<Pair>;
 typedef void(*Func) (const string & str);
+typedef void(*FuncNoArgs) ();
 
 Action operator!(const Action& a);
 

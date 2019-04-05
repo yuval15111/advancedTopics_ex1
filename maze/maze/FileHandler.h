@@ -24,7 +24,7 @@ public:
 	~FileHandler();
 	inline Manager *		getManager() { return m_manager; }
 	void					parseInput();
-	inline bool				parsingIsAllowed() { return m_errors.no_IO_Errors; }
+	inline bool				parsingIsAllowed() { return m_errors.allowParsing; }
 	void					pushActionsToOutputFile(vector<char> actions);
 };
 
