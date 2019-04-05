@@ -8,9 +8,9 @@ Manager::~Manager()
 /* main function of manager, where the game flow is */
 vector<char> Manager::play() {
 	vector<char> actionsLst;
-	m_player = new Player();									// PLAYER: LET'S GO!
+	m_player = new Player();										// PLAYER: LET'S GO!
 	for (int i = 1; i <= m_maxSteps; ++i) {
-		Action action = m_player->move();								// PLAYER: THIS IS MY MOVE!
+		Action action = m_player->move();							// PLAYER: THIS IS MY MOVE!
 		actionsLst.push_back(getActionChar(action));
 		if (action == Action::BOOKMARK)	updateBookmark();
 		else {
@@ -21,11 +21,11 @@ vector<char> Manager::play() {
 				return actionsLst;
 			}
 			if (playerHitsWallChar()) {
-				m_player->hitWall();									// PLAYER: OUCH!!
+				m_player->hitWall();								// PLAYER: OUCH!!
 				execute(action, true); 								// MANAGER: SORRY PAL, TRY AGAIN
 			}
 			if (playerHitsBookmark()) {								// MANAGER: YOU'RE RIGHT... HERE! <POINTING AT MAP>
-				m_player->hitBookmark();								// PLAYER: OHHH I REMEMBER THAT PLACE!
+				m_player->hitBookmark();							// PLAYER: OHHH I REMEMBER THAT PLACE!
 			}
 		}
 		printBoard();

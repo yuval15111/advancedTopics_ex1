@@ -10,7 +10,8 @@ private:
 	ofstream				m_fout;
 	Errors					m_errors;
 	Manager *				m_manager = nullptr;
-	bool					checkErrors();
+	inline void				allowParsing(bool allow) { m_errors.allowParsing = allow; }
+	void					checkErrors(void (*titleFunc));
 	inline void				pushError(ErrorType type, const string & str) { m_errors.list.push_back(Pair(type, str)); }
 	string					getName(string & line);
 	int						getIntValue(const string & input, const ErrorType error, string & line);
@@ -23,7 +24,7 @@ public:
 	~FileHandler();
 	inline Manager *		getManager() { return m_manager; }
 	void					parseInput();
-	inline bool				noErrors() { return m_errors.noErrors; }
+	inline bool				parsingIsAllowed() { return m_errors.no_IO_Errors; }
 	void					pushActionsToOutputFile(vector<char> actions);
 };
 

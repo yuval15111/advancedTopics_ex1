@@ -45,6 +45,16 @@ void printBadOutputAddressError(const string & str)
 	cout << "Command line argument for output file: " << str << " points to a bad path or to a file that already exists" << endl;
 }
 
+void printHeaderErrorTitle()
+{
+	cout << "Bad maze in file header:" << endl;
+}
+
+void printMazeErrorTitle()
+{
+	cout << "Bad maze file header:" << endl;
+}
+
 void printMaxStepsError(const string & str)
 {
 	cout << "expected in line 2 - MaxSteps = <num>" << endl;
@@ -90,9 +100,9 @@ void printMoreThanOneEndCharError(const string & str)
 void printWrongCharError(const string & str)
 {
 	if (str[0] == 9)
-		cout << "Wrong character in maze: TAB in row " << (int)str[1] << ", col " << (int)str[2] << endl;
+		cout << "Wrong character in maze: TAB in row " << ((int)str[1] + 1) << ", col " << ((int)str[2] + 1) << endl;
 	else
-		cout << "Wrong character in maze: " << str[0] << " in row " << (int)str[1] << ", col " << (int)str[2] << endl;
+		cout << "Wrong character in maze: " << str[0] << " in row " << ((int)str[1] + 1) << ", col " << ((int)str[2] + 1) << endl;
 }
 
 /* return true iff the file in path exists */

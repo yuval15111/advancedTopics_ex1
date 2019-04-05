@@ -64,7 +64,6 @@ void Player::updateMapping(Coordinate loc, char c) {
 
 Action Player::move() {
 	generateAction(findExclusions());
-	m_actionVector.push_back(m_action);
 	if (m_action == Action::BOOKMARK) return m_action; // no updates needed in player's other fields
 	updateLocation();
 	if (m_mazeMapping.find(m_location) == m_mazeMapping.end()) updateMapping(m_location, SPACE_CHAR);
@@ -109,6 +108,7 @@ void Player::generateAction(vector<Action> exclusions) {
 	}
 	if (numOfSteps() != 0 && m_action == m_actionVector[numOfSteps() - 1]) m_currActionCounter++; // updates the current action counter
 	else if (m_action != Action::BOOKMARK) m_currActionCounter = 1;
+	m_actionVector.push_back(m_action); // push action into the action list
 }
 
 bool Player::inVector(vector<Action> exclusions) {

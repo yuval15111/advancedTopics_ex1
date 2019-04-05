@@ -56,6 +56,8 @@ void printMissingInputError(const string & str);
 void printMissingOutputError(const string & str);
 void printBadInputAddressError(const string & str);
 void printBadOutputAddressError(const string & str);
+void printHeaderErrorTitle();
+void printMazeErrorTitle();
 void printMaxStepsError(const string & str);
 void printRowsError(const string & str);
 void printColsError(const string & str);
@@ -81,7 +83,9 @@ struct Errors {
 		{ErrorType::WrongChar, &printWrongCharError}
 	};
 	vector<pair<ErrorType, string>> list;
-	bool noErrors = true;
+	bool no_IO_Errors = true;
+	bool no_parsing_Errors = true;
+	bool allowParsing = false;
 };
 
 bool fileExists(const char* path);

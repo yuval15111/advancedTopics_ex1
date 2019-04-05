@@ -9,8 +9,8 @@
 class Player {
 	
 private:
-	int					m_rowsNum = MAX_INT;
-	int					m_colsNum = MAX_INT;
+	int						m_rowsNum = MAX_INT;
+	int						m_colsNum = MAX_INT;
 	Coordinate				m_bookmark;
 	vector <Action>			m_actionVector;
 	Coordinate				m_location;
@@ -33,7 +33,6 @@ public:
 	Action					move();
 	void					hitWall();
 	void					hitBookmark();
-	inline const Coordinate	getLocation() { return m_location; }
 	
 };
 

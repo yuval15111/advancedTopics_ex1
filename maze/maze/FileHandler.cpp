@@ -10,60 +10,61 @@ FileHandler::~FileHandler()
 /*	In the constructor we initialize ifstream m_fin and ofstream m_fout.
 	We also check here validity of the program arguments. */
 FileHandler::FileHandler(int argc, char * argv[]) {
-	if (argc < 3) {
-		if (argc == 1)
-			pushError(ErrorType::MissingInput, string());
-		pushError(ErrorType::MissingOutput, string());
-	}
-	else {
-		m_fin.open(argv[1]);
-		if (!m_fin.good())
-			pushError(ErrorType::BadInputAddress, argv[1]); // bad maze path or file does not exist
-		if (!fileExists(argv[2])) { 
-			m_fout.open(argv[2]);
-			if (!m_fout.good())
-				pushError(ErrorType::BadOutputAddress, argv[2]); // bad output path
+	switch (argc) {
+	case 1:
+		pushError(ErrorType::MissingInput, string());								// No arguments at all - shouldn't parse
+		break;
+	case 2:
+		pushError(ErrorType::MissingOutput, string());								// No output path argument: may parse maze anyway
+	default:
+		if (!fileExists(argv[1])) {
+			pushError(ErrorType::BadInputAddress, argv[1]);							// Bad maze path or file does not exist
+			allowParsing(true);
+			break;
 		}
-		else pushError(ErrorType::BadOutputAddress, argv[2]); // output file already exists
+		m_fin.open(argv[1]);
+		if (argc >= 3)
+			if (fileExists(argv[2])) {
+				pushError(ErrorType::BadOutputAddress, argv[2]);					// Bad output path argument: may parse maze anyway
+				m_errors.no_IO_Errors = false;
+			}
+			else m_fout.open(argv[2]);												// If reaches here, valid output path argument
 	}
-	checkErrors();
+	checkErrors(nullptr);
 }
 
-/*	This function checks if there are errors.
-	Returns: true iff there were errors. */
-bool FileHandler::checkErrors() {
-	if (m_errors.list.size() == 0) return true;
-	m_errors.noErrors = false;
+/*	This function checks if there are errors. If so: updates m_errors.noErrors field to false and prints the errors */
+void FileHandler::checkErrors(void(*titleFunc)) {
+	if (m_errors.list.size() == 0) return;
+	if (titleFunc != nullptr) { // parsing errors
+		titleFunc;
+		m_errors.no_parsing_Errors = false;
+	}
 	for (ErrorList::iterator it = m_errors.list.begin(); it != m_errors.list.end(); ++it) {
 		Func f = m_errors.fmap[it->first];
 		string str = it->second;
 		f(str);
 	}
 	m_errors.list.clear();
-	return false;
 }
 
 /* This function parses the input file and creates the manager object. */
 void FileHandler::parseInput() {
 	string line;
-	// Manager future fields
-	MazeBoard board; 
-	string name;
-	int maxSteps, rowsNum, colsNum;
-	Coordinate playerLocation = make_pair(0, 0), endLocation = make_pair(0, 0);
 
-	// Parsing begins here
-	name = getName(line);
-	maxSteps = getIntValue(MAXSTEPS, ErrorType::MaxStepsError, line);
-	rowsNum = getIntValue(ROWS, ErrorType::RowsError, line);
-	colsNum = getIntValue(COLS, ErrorType::ColsError, line);
-	if (checkErrors()) { // no errors, lines 2-4 are valid
-		board = getBoard(rowsNum, colsNum, playerLocation, endLocation, line);
-		if (checkErrors()) // no errors, maze file is valid
-			m_manager = new Manager(name, maxSteps, rowsNum, colsNum, board, playerLocation, endLocation);
-		else cout << "Bad maze in maze file:" << endl;
+	string name = getName(line);															// Collects maze parameters
+	int maxSteps = getIntValue(MAXSTEPS, ErrorType::MaxStepsError, line);
+	int rowsNum = getIntValue(ROWS, ErrorType::RowsError, line);
+	int colsNum = getIntValue(COLS, ErrorType::ColsError, line);
+	checkErrors(printHeaderErrorTitle);
+	if (m_errors.no_parsing_Errors) {																// No errors, lines 2-4 are valid.
+		Coordinate playerLocation, endLocation;
+		MazeBoard board = getBoard(rowsNum, colsNum, playerLocation, endLocation, line);
+		checkErrors(printMazeErrorTitle);
+		if (m_errors.no_parsing_Errors && m_errors.noInputErrors)									// No errors, maze file is valid - creates a Manager object
+			m_manager = new Manager(name, maxSteps, rowsNum, colsNum,
+									board, playerLocation, endLocation);
 	}
-	else cout << "Bad maze in file header:" << endl;
 }
 
 string FileHandler::getName(string & line) {
