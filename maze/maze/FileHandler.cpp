@@ -10,6 +10,8 @@ FileHandler::~FileHandler()
 /*	In the constructor we initialize ifstream m_fin and ofstream m_fout.
 	We also check here validity of the program arguments. */
 FileHandler::FileHandler(int argc, char * argv[]) {
+
+	// Checking if the parsing allow for local issues
 	bool parseAllow = true;
 	switch (argc) {
 	case 1:
@@ -24,7 +26,6 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 			// For a new printing order - first input and then output
 			if (m_errors.list.size() > 0 && m_errors.list[0].first == ErrorType::MissingOutput) {
 				m_errors.list.pop_back();
-				pushError(ErrorType::MissingInput, string());
 				pushError(ErrorType::BadInputAddress, argv[1]);
 				pushError(ErrorType::MissingOutput, string());
 				
@@ -32,7 +33,6 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 
 			// There are no errors for output
 			else {
-				pushError(ErrorType::MissingInput, string());
 				pushError(ErrorType::BadInputAddress, argv[1]);							// Bad maze path or file does not exist
 			}
 
@@ -41,27 +41,26 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 			allowParsing(false);
 		}
 		if (argc >= 3) {
-				if (fileExists(argv[2])) {
-					pushError(ErrorType::MissingOutput, string());
-					pushError(ErrorType::BadOutputAddress, argv[2]);					// Bad output path argument: may parse maze anyway
+			if (fileExists(argv[2])) {
+				pushError(ErrorType::BadOutputAddress, argv[2]);					// Bad output path argument: may parse maze anyway
 					
-					// If parsing is allow meaning the input file is ok
-					if (parseAllow) {
-						allowParsing(true);
-						m_fin.open(argv[1]);
-					}
-					m_errors.no_IO_Errors = false;
+				// If parsing is allow meaning the input file is ok
+				if (parseAllow) {
+					allowParsing(true);
+					m_fin.open(argv[1]);
 				}
-				else {
-					m_fout.open(argv[2]);
+				m_errors.no_IO_Errors = false;
+			}
+			else {
+				m_fout.open(argv[2]);
+
+				if (parseAllow) {
 					m_fin.open(argv[1]);
 
-					if (parseAllow) {
-
-						// If reaches here, valid output path argument
-						allowParsing(true);
-					}
-				}	
+					// If reaches here, valid output path argument
+					allowParsing(true);
+				}
+			}	
 		}
 
 		// only if input is valid we will allow parsing
