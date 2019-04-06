@@ -47,12 +47,12 @@ void printBadOutputAddressError(const string & str)
 
 void printHeaderErrorTitle()
 {
-	cout << "Bad maze in file header:" << endl;
+	cout << "Bad maze file header:" << endl;
 }
 
 void printMazeErrorTitle()
 {
-	cout << "Bad maze file header:" << endl;
+	cout << "Bad maze in maze file:" << endl;
 }
 
 void printMaxStepsError(const string & str)

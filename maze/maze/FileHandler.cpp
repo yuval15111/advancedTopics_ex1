@@ -80,7 +80,7 @@ string FileHandler::getName(string & line) {
 }
 
 int FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
-	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*[^a-zA-Z]\\s*((.|\\r)*)");
+	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*$\((.|\\r)*)");
 	
 	const regex numReg("[1-9][0-9]*");
 	smatch match;
@@ -105,18 +105,43 @@ MazeBoard FileHandler::getBoard(const int rows, const int cols, Coordinate & pla
 	for (int i = 0; i < rows; i++) {
 		MazeRow row;
 		if (getline(m_fin, line)) {
-			for (int j = 0; j < (int)line.length(); j++) {
-				if (line[j] == PLAYER_CHAR)
-					handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
-				else if (line[j] == END_CHAR)
-					handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
-				else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
-					handleInvalidChar(line[j], i, j);
-				row.push_back(line[j]);
+
+			// The case when there are external chars in the line
+			if (cols < (int)line.length()) {
+				for (int j = 0; j < cols; j++) {
+					if (line[j] == PLAYER_CHAR)
+						handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
+					else if (line[j] == END_CHAR)
+						handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
+					else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
+						handleInvalidChar(line[j], i, j);
+					row.push_back(line[j]);
+				}
+
+				/* Check the rest of the line - other chars are invalid
+				for (int k = cols; k < (int)line.length(); k++) {
+					if (line[k] != SPACE_CHAR && line[k] != WALL_CHAR)
+						handleInvalidChar(line[k], i, k);
+				}	*/
 			}
+			else {
+				for (int j = 0; j < (int)line.length(); j++) {
+					if (line[j] == PLAYER_CHAR)
+						handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
+					else if (line[j] == END_CHAR)
+						handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
+					else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
+						handleInvalidChar(line[j], i, j);
+					row.push_back(line[j]);
+				}
+			}
+			
+			// Refill with SPACE_CHAR when the cols > line.length()
 			for (int j = (int)line.length(); j < cols; j++)
 				row.push_back(SPACE_CHAR);
 		}
+
+		// Refill one row if missing
 		else
 			for (int j = 0; j < cols; j++)
 				row.push_back(SPACE_CHAR);
