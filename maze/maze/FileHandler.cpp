@@ -15,7 +15,7 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 	switch (argc) {
 	case 1:
 		pushError(ErrorType::MissingInput, string());								// No arguments at all - shouldn't parse
-		// TODO: pushError(ErrorType::MissingOutput, string());
+		pushError(ErrorType::MissingOutput, string());
 		break;
 	case 2:
 		m_errors.no_IO_Errors = false;
@@ -43,6 +43,11 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 				if (parseAllow) {
 					allowParsing(true);
 					m_fin.open(argv[1]);
+					if (!m_fin.is_open()) {
+						pushError(ErrorType::BadInputAddress, argv[1]);
+						parseAllow = false;
+						allowParsing(false);
+					}
 				}
 				m_errors.no_IO_Errors = false;
 			}
@@ -50,6 +55,11 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 				m_fout.open(argv[2]);
 				if (parseAllow) {
 					m_fin.open(argv[1]);
+					if (!m_fin.is_open()) {
+						pushError(ErrorType::BadInputAddress, argv[1]);
+						parseAllow = false;
+						allowParsing(false);
+					}
 					// If reaches here, valid output path argument
 					allowParsing(true);
 				}

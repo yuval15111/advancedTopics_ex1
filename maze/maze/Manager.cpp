@@ -28,7 +28,7 @@ vector<char> Manager::play() {
 				m_player->hitBookmark();							// PLAYER: OHHH I REMEMBER THAT PLACE!
 			}
 		}
-		printBoard();
+		//printBoard();
 	}
 	actionsLst.push_back('X');
 	printLostMessage(m_maxSteps);									// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!
