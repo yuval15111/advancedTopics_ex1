@@ -17,7 +17,7 @@
 #define MAXSTEPS "MaxSteps"
 #define ROWS "Rows"
 #define COLS "Cols"
-#define SPACE_CHAR ' '
+#define SPACE_CHAR '-'
 #define PLAYER_CHAR '@'
 #define END_CHAR '$'
 #define WALL_CHAR '#'

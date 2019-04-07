@@ -141,7 +141,7 @@ MazeBoard FileHandler::getBoard(const int rows, const int cols, Coordinate & pla
 					handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
 				else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
 					handleInvalidChar(line[j], i, j);
-				//TODO: else if (line[j] == '\r') break;
+				else if (line[j] == '\r') line[j] = SPACE_CHAR;
 				row.push_back(line[j]);
 			}
 			for (int j = (int)line.length(); j < cols; j++)					// Fill with SPACE_CHAR when cols > line.length()
