@@ -61,7 +61,7 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 						allowParsing(false);
 					}
 					// If reaches here, valid output path argument
-					allowParsing(true);
+					else allowParsing(true);
 				}
 			}	
 		}
