@@ -20,11 +20,11 @@ vector<char> Manager::play() {
 				actionsLst.push_back('!');
 				return actionsLst;
 			}
-			if (playerHitsWallChar()) {
+			else if (playerHitsWallChar()) {
 				m_player->hitWall();								// PLAYER: OUCH!!
 				execute(action, true); 								// MANAGER: SORRY PAL, TRY AGAIN
 			}
-			if (playerHitsBookmark()) {								// MANAGER: YOU'RE RIGHT... HERE! <POINTING AT MAP>
+			else if (playerHitsBookmark()) {						// MANAGER: YOU'RE RIGHT... HERE! <POINTING AT MAP>
 				m_player->hitBookmark();							// PLAYER: OHHH I REMEMBER THAT PLACE!
 			}
 		}

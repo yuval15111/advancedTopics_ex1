@@ -10,32 +10,28 @@ FileHandler::~FileHandler()
 /*	In the constructor we initialize ifstream m_fin and ofstream m_fout.
 	We also check here validity of the program arguments. */
 FileHandler::FileHandler(int argc, char * argv[]) {
-
 	// Checking if the parsing allow for local issues
 	bool parseAllow = true;
 	switch (argc) {
 	case 1:
 		pushError(ErrorType::MissingInput, string());								// No arguments at all - shouldn't parse
+		// TODO: pushError(ErrorType::MissingOutput, string());
 		break;
 	case 2:
 		m_errors.no_IO_Errors = false;
 		pushError(ErrorType::MissingOutput, string());								// No output path argument: may parse maze anyway
 	default:
 		if (!fileExists(argv[1])) {
-
 			// For a new printing order - first input and then output
 			if (m_errors.list.size() > 0 && m_errors.list[0].first == ErrorType::MissingOutput) {
 				m_errors.list.pop_back();
 				pushError(ErrorType::BadInputAddress, argv[1]);
 				pushError(ErrorType::MissingOutput, string());
-				
 			}
-
 			// There are no errors for output
 			else {
 				pushError(ErrorType::BadInputAddress, argv[1]);							// Bad maze path or file does not exist
 			}
-
 			// doesnt allow parsing - include locally-> parse allow 
 			parseAllow = false;
 			allowParsing(false);
@@ -43,7 +39,6 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 		if (argc >= 3) {
 			if (fileExists(argv[2])) {
 				pushError(ErrorType::BadOutputAddress, argv[2]);					// Bad output path argument: may parse maze anyway
-					
 				// If parsing is allow meaning the input file is ok
 				if (parseAllow) {
 					allowParsing(true);
@@ -53,18 +48,14 @@ FileHandler::FileHandler(int argc, char * argv[]) {
 			}
 			else {
 				m_fout.open(argv[2]);
-
 				if (parseAllow) {
 					m_fin.open(argv[1]);
-
 					// If reaches here, valid output path argument
 					allowParsing(true);
 				}
 			}	
 		}
-
-		// only if input is valid we will allow parsing
-		else if (parseAllow) {
+		else if (parseAllow) { // only if input is valid we will allow parsing
 			allowParsing(true);
 			m_fin.open(argv[1]);
 		}
@@ -98,16 +89,17 @@ void FileHandler::parseInput() {
 	int rowsNum = getIntValue(ROWS, ErrorType::RowsError, line);
 	int colsNum = getIntValue(COLS, ErrorType::ColsError, line);
 	checkErrors((void*)printHeaderErrorTitle);
-	if (m_errors.no_parsing_Errors) {																// No errors, lines 2-4 are valid.
+	if (m_errors.no_parsing_Errors) {														// No errors, lines 2-4 are valid.
 		Coordinate playerLocation, endLocation;
 		MazeBoard board = getBoard(rowsNum, colsNum, playerLocation, endLocation, line);
 		checkErrors((void*)printMazeErrorTitle);
-		if (m_errors.no_parsing_Errors && m_errors.no_IO_Errors)									// No errors, maze file is valid - creates a Manager object
+		if (m_errors.no_parsing_Errors && m_errors.no_IO_Errors)							// No errors, maze file is valid - creates a Manager object
 			m_manager = new Manager(name, maxSteps, rowsNum, colsNum,
 									board, playerLocation, endLocation);
 	}
 }
 
+/* This function retrieves the name of the maze. */
 string FileHandler::getName(string & line) {
 	if (getline(m_fin, line)) {
 		return line;
@@ -115,8 +107,9 @@ string FileHandler::getName(string & line) {
 	return nullptr;
 }
 
+/* This function retrieves the integer value for lines 2-4. */
 int FileHandler::getIntValue(const string & input, const ErrorType error, string & line) {
-	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*$((.|\\r)*)");
+	const regex reg("\\s*" + input + "\\s*=\\s*[1-9][0-9]*\\s*$"); 
 	
 	const regex numReg("[1-9][0-9]*");
 	smatch match;
@@ -140,45 +133,21 @@ MazeBoard FileHandler::getBoard(const int rows, const int cols, Coordinate & pla
 	bool seenPlayerChar = false, seenEndChar = false;
 	for (int i = 0; i < rows; i++) {
 		MazeRow row;
-		if (getline(m_fin, line)) {
-
-			// The case when there are external chars in the line
-			if (cols < (int)line.length()) {
-				for (int j = 0; j < cols; j++) {
-					if (line[j] == PLAYER_CHAR)
-						handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
-					else if (line[j] == END_CHAR)
-						handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
-					else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
-						handleInvalidChar(line[j], i, j);
-					row.push_back(line[j]);
-				}
-
-				/* Check the rest of the line - other chars are invalid
-				for (int k = cols; k < (int)line.length(); k++) {
-					if (line[k] != SPACE_CHAR && line[k] != WALL_CHAR)
-						handleInvalidChar(line[k], i, k);
-				}	*/
+		if (getline(m_fin, line)) {											// Succeeded reading a line - fills MazeRow according to line
+			for (int j = 0; j < min(cols, (int)line.length()); j++) {
+				if (line[j] == PLAYER_CHAR)
+					handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
+				else if (line[j] == END_CHAR)
+					handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
+				else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
+					handleInvalidChar(line[j], i, j);
+				//TODO: else if (line[j] == '\r') break;
+				row.push_back(line[j]);
 			}
-			else {
-				for (int j = 0; j < (int)line.length(); j++) {
-					if (line[j] == PLAYER_CHAR)
-						handleSpecialChar(PLAYER_CHAR, playerLocation, i, j, seenPlayerChar, line, ErrorType::MoreThanOnePlayerChar);
-					else if (line[j] == END_CHAR)
-						handleSpecialChar(END_CHAR, endLocation, i, j, seenEndChar, line, ErrorType::MoreThanOneEndChar);
-					else if (line[j] != SPACE_CHAR && line[j] != WALL_CHAR) // other chars are invalid
-						handleInvalidChar(line[j], i, j);
-					row.push_back(line[j]);
-				}
-			}
-			
-			// Refill with SPACE_CHAR when the cols > line.length()
-			for (int j = (int)line.length(); j < cols; j++)
+			for (int j = (int)line.length(); j < cols; j++)					// Fill with SPACE_CHAR when cols > line.length()
 				row.push_back(SPACE_CHAR);
 		}
-
-		// Refill one row if missing
-		else
+		else																// No more lines in maze file - fills the row with SPACE_CHARs
 			for (int j = 0; j < cols; j++)
 				row.push_back(SPACE_CHAR);
 		board.push_back(row);
