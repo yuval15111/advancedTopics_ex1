@@ -40,7 +40,9 @@ void Manager::printBoard()
 	for (int i = 0; i < m_rowsNum; i++) {
 		for (int j = 0; j < m_colsNum; j++) {
 			if (m_playerLocation.first != i || m_playerLocation.second != j) {
-				cout << m_board[i][j];
+				if (m_board[i][j] != ' ')
+					cout << m_board[i][j];
+				else cout << '-';
 			}
 			else {
 				cout << "@";
