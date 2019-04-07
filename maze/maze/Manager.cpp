@@ -28,31 +28,10 @@ vector<char> Manager::play() {
 				m_player->hitBookmark();							// PLAYER: OHHH I REMEMBER THAT PLACE!
 			}
 		}
-		//printBoard();
 	}
 	actionsLst.push_back('X');
 	printLostMessage(m_maxSteps);									// MANAGER: YOU SHOULD TRY HARDER NEXT TIME. CYA!
 	return actionsLst;
-}
-
-void Manager::printBoard()
-{
-	for (int i = 0; i < m_rowsNum; i++) {
-		for (int j = 0; j < m_colsNum; j++) {
-			if (m_playerLocation.first != i || m_playerLocation.second != j) {
-				if (m_board[i][j] != ' ')
-					cout << m_board[i][j];
-				else cout << '-';
-			}
-			else {
-				cout << "@";
-			}
-		}
-			
-		cout << endl;
-	}
-	cout << endl;
-	cout << endl;
 }
 
 void Manager::execute(Action a, const bool undo)

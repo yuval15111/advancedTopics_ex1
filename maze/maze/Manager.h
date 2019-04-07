@@ -30,7 +30,6 @@ public:
 	inline bool				playerHitsWallChar() { return getCoordValue() == WALL_CHAR; }
 	inline bool				playerHitsBookmark() { return m_playerLocation == m_bookmark; }
 	inline int				getMaxSteps() { return m_maxSteps; }
-	void					printBoard();
 	vector<char>			play();
 };
 
